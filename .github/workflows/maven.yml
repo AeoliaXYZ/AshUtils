@@ -10,9 +10,9 @@ name: Build
 
 on:
   push:
-    branches: [ "release", "dev" ]
+    branches: [ "master", "dev" ]
   pull_request:
-    branches: [ "release" ]
+    branches: [ "master" ]
 
 jobs:
   build:
