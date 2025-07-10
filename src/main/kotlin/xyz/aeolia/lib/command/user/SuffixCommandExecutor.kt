@@ -32,7 +32,7 @@ class SuffixCommandExecutor(var plugin: JavaPlugin) : TabExecutor {
         return true
       }
     }
-    if (!sender.hasPermission("libls.suffix-grant")) {
+    if (!sender.hasPermission("lib.suffix-grant")) {
       if (sender is Player) SuffixMenu(plugin).INVENTORY.open(sender)
       return true
     }
@@ -40,7 +40,7 @@ class SuffixCommandExecutor(var plugin: JavaPlugin) : TabExecutor {
     val suffixList = plugin.config.getStringList("suffix.list")
 
     if (args[0] == "create") {
-      if (!sender.hasPermission("libls.suffix-create")) return true
+      if (!sender.hasPermission("lib.suffix-create")) return true
       val formatted = SuffixMenu.formatSuffix(args[1], true)
       PermissionManager.api.groupManager.createAndLoadGroup(args[1])
         .thenAccept(Consumer { e: Group ->
@@ -75,7 +75,7 @@ class SuffixCommandExecutor(var plugin: JavaPlugin) : TabExecutor {
       return true
     }
 
-    if (!suffixList.contains(args[1])) {
+    if (!suffixList.contains(args[2])) {
       MessageSender.sendMessage(sender, "Invalid suffix!")
       return true
     }
@@ -110,12 +110,12 @@ class SuffixCommandExecutor(var plugin: JavaPlugin) : TabExecutor {
     val completions: MutableList<String> = ArrayList<String>()
     val commands: MutableList<String> = ArrayList<String>()
 
-    if (!sender.hasPermission("libls.suffix-grant")) return mutableListOf()
+    if (!sender.hasPermission("lib.suffix-grant")) return mutableListOf()
 
     if (args.size == 1) {
       commands.add("grant")
       commands.add("revoke")
-      if(sender.hasPermission("libls.suffix-create")) commands.add("create")
+      if(sender.hasPermission("lib.suffix-create")) commands.add("create")
       StringUtil.copyPartialMatches<MutableList<String>>(args[0], commands, completions)
     } else if (args.size == 2) {
       if (args[0] == "grant" || args[0] == "revoke") {
