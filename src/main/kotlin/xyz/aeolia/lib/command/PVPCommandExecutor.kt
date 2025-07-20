@@ -33,15 +33,15 @@ class PVPCommandExecutor(plugin1: JavaPlugin) : CommandExecutor, PVPMenu(plugin1
         return true
       }
 
-      var isPlayerFound = false
-      Bukkit.getOnlinePlayers().forEach { player ->
-        if (player.name == args[1]) {
-          PVPListener.tpPlayerToArena(player, plugin)
-          isPlayerFound = true
-        }
-      }
-
-      if (!isPlayerFound) {
+      if (run {
+          Bukkit.getOnlinePlayers().forEach { player ->
+            if (player.name == args[1]) {
+              PVPListener.tpPlayerToArena(player, plugin)
+              return@run true
+            }
+          }
+          false
+        }) {
         MessageSender.sendMessage(sender, Message.Player.NOT_FOUND)
       }
       return true
