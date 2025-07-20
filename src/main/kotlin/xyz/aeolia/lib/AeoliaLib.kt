@@ -42,7 +42,7 @@ class AeoliaLib : JavaPlugin() {
       pm.disablePlugin(this)
     }
     // Inits
-    //KitManager.init(this)
+    KitManager.init(this)
     MessageSender.init(this)
     UserManager.init(this)
     UserMapManager.loadUserMap()
@@ -53,7 +53,7 @@ class AeoliaLib : JavaPlugin() {
     Bukkit.getScheduler().scheduleSyncRepeatingTask(this, { mineListener.tick() }, 1L, 1L)
     pm.registerEvents(BukkitEventListener(this), this)
     pm.registerEvents(EssEventListener(this), this)
-    //pm.registerEvents(PVPListener(this), this)
+    pm.registerEvents(PVPListener(this), this)
     // Config
     ConfigManager(this, true).loadConfig()
     config.options().copyDefaults(true)
@@ -64,7 +64,7 @@ class AeoliaLib : JavaPlugin() {
     commands["broadcast"] = BroadcastCommandExecutor(this)
     commands["code"] = CodeCommandExecutor(this)
     commands["fake"] = FakeTabExecutor(this)
-    //commands["pvp"] = PVPCommandExecutor(this)
+    commands["pvp"] = PVPCommandExecutor(this)
     commands["minimessage"] = MiniMessageCommandExecutor(this)
     commands["mod"] = ModCommandExecutor()
     commands["report"] = ReportCommandExecutor(this)
