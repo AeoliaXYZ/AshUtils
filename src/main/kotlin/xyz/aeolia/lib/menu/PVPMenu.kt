@@ -24,22 +24,22 @@ open class PVPMenu(open val plugin: JavaPlugin) : InventoryProvider {
     .build()!!
 
   override fun init(player: Player, contents: InventoryContents) {
-    KitManager.kits.forEach { kit ->
-      if(kit.value.id == "__global__") return@forEach
+    KitManager.kits.forEach {
+      if(it.value.id == "__global__") return@forEach
       val condition = try {
-        player.hasPermission(kit.value.permission)
+        player.hasPermission(it.value.permission)
       } catch (_: NullPointerException) {
         true
       }
-      val displayItem = kit.value.displayItem.loadStack()?: run {
-        MessageSender.sendMessage(player, "displayItem in kit ${kit.key} failed to deserialize!")
+      val displayItem = it.value.displayItem.loadStack()?: run {
+        MessageSender.sendMessage(player, "displayItem in kit ${it.key} failed to deserialize!")
         return@forEach
       }
       if (condition) contents.add(ClickableItem.of(displayItem) { e ->
         e.isCancelled = true
         PVPListener.clearBlocks(UserManager.getUser(player))
-        KitManager.givePlayerKit(player, kit.value)
-        MessageSender.sendMessage(player, "Equipped kit ${kit.value.displayName}!")
+        KitManager.givePlayerKit(player, it.value)
+        MessageSender.sendMessage(player, "Equipped kit ${it.value.displayName}!")
         PVPListener.tpPlayerToArena(player, plugin)
       })
     }
@@ -48,8 +48,8 @@ open class PVPMenu(open val plugin: JavaPlugin) : InventoryProvider {
   fun getRows(): Int {
     val folder = File(plugin.dataFolder, "kits")
     var fileCount = folder.listFiles().size
-    folder.listFiles().forEach { file ->
-      if (file.isFile) if (file.nameWithoutExtension == "__global__") fileCount -= 1
+    folder.listFiles().forEach {
+      if (it.isFile && it.nameWithoutExtension == "__global__") fileCount -= 1
     }
     return ceil(fileCount / 9.toDouble()).toInt()
   }

@@ -8,14 +8,14 @@ class ClearChatHandler {
   companion object {
     @JvmStatic
     fun doClearChat() : Boolean {
-      for (player in Bukkit.getOnlinePlayers()) {
+      Bukkit.getOnlinePlayers().forEach { player ->
         if(!player.hasPermission("libls.clearchat.exempt")) {
-          repeat (100) {
+          repeat(100) {
             player.sendMessage(Component.text(" "))
           }
-        } else {
-          MessageSender.sendMessage(player, "Chat cleared for non-exempt users.")
+          return@forEach
         }
+        MessageSender.sendMessage(player, "Chat cleared for non-exempt users.")
       }
       return true
     }
