@@ -10,4 +10,4 @@ You need to ensure settings.restart_script is set correctly in spigot.yml, or ha
 Ensure the config is set up, several commands rely on independently configured webhooks. If these URIs aren't provided, the plugin will handle the error, but it'll log every time it fails in the console.
 
 ## Dependencies
-This plugin depends Essentials, and softdepends LuckPerms, and Vault. Without these plugins, most features of this plugin will not be available.
+This plugin softdepends Essentials, LuckPerms, and Vault. Without these plugins, most features of this plugin will not be available.
