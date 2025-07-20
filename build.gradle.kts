@@ -55,7 +55,7 @@ dependencies {
 }
 
 group = "xyz.aeolia"
-version = "2.0.1-dev2"
+version = "1.9.1"
 description = "AeoliaLib"
 java.sourceCompatibility = JavaVersion.VERSION_21
 
