@@ -33,15 +33,9 @@ class PVPCommandExecutor(plugin1: JavaPlugin) : CommandExecutor, PVPMenu(plugin1
         return true
       }
 
-      run {
-        Bukkit.getOnlinePlayers().forEach { player ->
-          if (player.name == args[1]) {
-            PVPListener.tpPlayerToArena(player, plugin)
-            return@run
-          }
-        }
-        MessageSender.sendMessage(sender, Message.Player.NOT_FOUND)
-      }
+      Bukkit.getOnlinePlayers().firstOrNull { it.name == args[1] }?.let {
+        PVPListener.tpPlayerToArena(it, plugin)
+      } ?: MessageSender.sendMessage(sender, Message.Player.NOT_FOUND)
 
       return true
     }
