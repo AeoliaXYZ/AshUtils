@@ -37,10 +37,10 @@ class PVPCommandExecutor(plugin1: JavaPlugin) : CommandExecutor, PVPMenu(plugin1
           Bukkit.getOnlinePlayers().forEach { player ->
             if (player.name == args[1]) {
               PVPListener.tpPlayerToArena(player, plugin)
-              return@run true
+              return@run false
             }
           }
-          false
+          true
         }) {
         MessageSender.sendMessage(sender, Message.Player.NOT_FOUND)
       }
