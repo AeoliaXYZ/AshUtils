@@ -32,19 +32,20 @@ class Item(
 
     if (this.lore != null) {
       val lore = mutableListOf<Component>()
-      this.lore.forEach { line ->
-        lore.add(mm.deserialize(line))
+      this.lore.forEach {
+        lore.add(mm.deserialize(it))
       }
       meta.lore(lore)
     }
 
-    this.enchantments?.forEach{ enchant ->
-      val registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT)
-      val enchantment = registry.get(NamespacedKey.minecraft(enchant.key)) ?: run {
-        MessageSender.Companion.sendMessage(Bukkit.getConsoleSender(), "Invalid enchantment key: ${enchant.key}")
+    val registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT)
+    this.enchantments?.forEach {
+      val enchantment = registry.get(NamespacedKey.minecraft(it.key)) ?: run {
+        MessageSender.Companion.sendMessage(Bukkit.getConsoleSender(),
+          "Invalid enchantment key: ${it.key}")
         return null
       }
-      meta.addEnchant(enchantment, enchant.value, true)
+      meta.addEnchant(enchantment, it.value, true)
     }
     stack.itemMeta = meta
     MessageSender.Companion.sendMessage(Bukkit.getConsoleSender(), "Loaded stack $stack")

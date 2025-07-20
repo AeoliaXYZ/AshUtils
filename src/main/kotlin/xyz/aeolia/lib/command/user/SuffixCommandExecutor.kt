@@ -27,10 +27,9 @@ class SuffixCommandExecutor(var plugin: JavaPlugin) : TabExecutor {
       if (sender is Player) {
         SuffixMenu(plugin).INVENTORY.open(sender)
         return true
-      } else {
-        MessageSender.sendMessage(sender, "This command can only be executed by a player without an argument.")
-        return true
       }
+      MessageSender.sendMessage(sender, "This command can only be executed by a player without an argument.")
+      return true
     }
     if (!sender.hasPermission("lib.suffix-grant")) {
       if (sender is Player) SuffixMenu(plugin).INVENTORY.open(sender)
@@ -63,6 +62,7 @@ class SuffixCommandExecutor(var plugin: JavaPlugin) : TabExecutor {
         }
       return true
     }
+
     if (args.size != 3) return invEx(sender)
     val status: Boolean = when (args[0]) {
       "grant" -> true
@@ -79,6 +79,7 @@ class SuffixCommandExecutor(var plugin: JavaPlugin) : TabExecutor {
       MessageSender.sendMessage(sender, "Invalid suffix!")
       return true
     }
+
     if (PermissionManager.permissionUpdate(uuid, "lib.suffix." + args[2], status)) {
       if (!status) {
         PermissionManager.groupUpdate(plugin, uuid, args[2], false)
@@ -89,6 +90,7 @@ class SuffixCommandExecutor(var plugin: JavaPlugin) : TabExecutor {
       )
       return true
     }
+
     MessageSender.sendMessage(
       sender, "Something went wrong trying to modify permissions. " +
               "Please check the console."
