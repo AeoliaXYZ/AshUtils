@@ -1,4 +1,4 @@
-package xyz.aeolia.lib.serializable
+package xyz.aeolia.lib.data
 
 import org.bukkit.Bukkit
 import org.bukkit.block.Block

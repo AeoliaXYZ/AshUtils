@@ -5,7 +5,8 @@ import kotlinx.serialization.json.Json
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.plugin.java.JavaPlugin
-import xyz.aeolia.lib.serializable.User
+import xyz.aeolia.lib.data.User
+import xyz.aeolia.lib.task.UserPruneTask
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileWriter
@@ -34,27 +35,28 @@ class UserManager {
 
     @JvmStatic
     fun getUser(player: OfflinePlayer): User {
-      var user: User?
       val uuid = player.uniqueId
-      user = users[uuid]
-      if (user != null) return user
-      val file = File(folder, "${uuid}.json")
-      if (!file.exists()) {
-        user = User()
-        user.uuid = uuid
-        user.online = player.isOnline
-        putUser(user)
-        return user
-      }
-      try {
-        user = Json.decodeFromString(file.readText())!!
+      users[uuid]?.let { return it }
 
-        putUser(user)
-        return user
-      } catch (_: FileNotFoundException) {
-        plugin.logger.severe("Could not read file ${file.absolutePath}.")
-        return User()
+      val file = File(folder, "${uuid}.json")
+      val user: User = run {
+        if (!file.exists()) {
+          return@run User(uuid = uuid, online = player.isOnline)
+        }
+        try {
+          return@run Json.decodeFromString(file.readText())!!
+        } catch (_: FileNotFoundException) {
+          plugin.logger.severe("Could not read file ${file.absolutePath}.")
+          return@run null
+        }
+      }?: run { return User() }
+      putUser(user)
+
+      if (!user.online) {
+        UserPruneTask(player, plugin).runTaskLater(plugin, plugin.config.getLong("prune-time"))
       }
+
+      return user
     }
 
     @JvmStatic

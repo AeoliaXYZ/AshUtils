@@ -10,7 +10,7 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
 import xyz.aeolia.lib.sender.MessageSender
-import xyz.aeolia.lib.serializable.Kit
+import xyz.aeolia.lib.data.Kit
 import xyz.aeolia.lib.utils.Message.Error.GENERIC
 import java.io.File
 
