@@ -26,7 +26,7 @@ class UserManager {
       this.plugin = plugin
       folder = File(plugin.dataFolder, "/users/")
       if (!folder.exists()) {
-        if (folder.mkdir()) {
+        if (!folder.mkdir()) {
           plugin.logger.severe("Could not create directory ${folder.absolutePath}.")
           Bukkit.getPluginManager().disablePlugin(plugin)
         }
