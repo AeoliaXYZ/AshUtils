@@ -43,7 +43,7 @@ class WebhookSender {
         return false
       })
       val response = postWebhook(uri, messageAsString)
-      if (response.statusCode() >= 200 && response.statusCode() < 300) {
+      if (response.statusCode() != 204) {
         plugin.logger.info(String.format(REQUEST_FAIL, response.statusCode(), response.body()))
         return false
       }

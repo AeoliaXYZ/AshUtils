@@ -9,9 +9,9 @@ import net.kyori.adventure.audience.Audience
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
-import xyz.aeolia.lib.sender.MessageSender
 import xyz.aeolia.lib.serializable.Kit
 import xyz.aeolia.lib.utils.Message.Error.GENERIC
+import xyz.aeolia.lib.sender.MessageSender
 import java.io.File
 
 class KitManager {
@@ -24,37 +24,36 @@ class KitManager {
     @JvmStatic
     fun init(plugin: JavaPlugin, recipient: Audience? = null) {
       loaded = false
-      this.plugin = plugin
+      this.plugin=plugin
       scope = CoroutineScope(Dispatchers.Default)
       scope.launch {
-        initCoroutine(recipient)
-        loaded = true
+        initCoro(recipient)
+        loaded=true
       }
     }
 
-    private fun initCoroutine(recipient: Audience? = null) {
-      kits.forEach {
-        kits.remove(it.key)
+    private fun initCoro(recipient: Audience? = null) {
+      for ((k, _) in kits) {
+        kits.remove(k)
       }
       val folder = File(plugin.dataFolder, "kits")
       if (!folder.exists()) {
         folder.mkdirs()
       }
-      folder.listFiles()?.forEach {
-        if (!it.isFile) {
-          return@forEach
-        }
-        try {
-          val id = it.nameWithoutExtension
-          val kit = Json.decodeFromString<Kit>(it.readText()).apply {
-            this.id = id
-          }
-          kits[id] = kit
-        } catch (e: Exception) {
-          plugin.logger.warning("Exception while reading ${it.name}: ${e.message}")
+      folder.listFiles()?.forEach { file ->
+        if (file.isFile) {
+            try {
+              val id = file.nameWithoutExtension
+              val kit = Json.decodeFromString<Kit>(file.readText()).apply {
+                this.id = id
+              }
+              kits[id] = kit
+            } catch (e: Exception) {
+              plugin.logger.warning("Exception while reading ${file.name}: ${e.message}")
+            }
         }
       }
-      if (recipient != null) {
+      if(recipient != null) {
         MessageSender.sendMessage(recipient, "Kit reload complete! ${kits.size} kits loaded.")
       }
     }
@@ -63,16 +62,16 @@ class KitManager {
       scope.cancel()
     }
 
-    fun givePlayerKit(player: Player, kit: Kit): Boolean {
+    fun givePlayerKit(player: Player, kit: Kit) : Boolean {
       val items = kit.items.toMutableList()
       if (kits.containsKey("__global__")) {
         items.addAll(kits["__global__"]!!.items)
       }
       player.inventory.clear()
-      items.forEach {
-        val stack = it.loadStack() ?: run {
+      items.forEach { item ->
+        val stack = item.loadStack() ?: run {
           MessageSender.sendMessage(player, GENERIC)
-          plugin.logger.warning("Error processing item $it in kit ${kit.id}")
+          plugin.logger.warning("Error processing item $item in kit ${kit.id}")
           return false
         }
         if (!equipIfArmor(player, stack)) {
@@ -82,7 +81,7 @@ class KitManager {
       return true
     }
 
-    fun equipIfArmor(player: Player, stack: ItemStack): Boolean {
+    fun equipIfArmor(player: Player, stack: ItemStack) : Boolean {
       val id = stack.type.name
       when {
         id.contains("HELMET") -> player.inventory.helmet = stack

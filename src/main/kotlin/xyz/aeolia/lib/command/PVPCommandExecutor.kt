@@ -22,22 +22,28 @@ class PVPCommandExecutor(plugin1: JavaPlugin) : CommandExecutor, PVPMenu(plugin1
       MessageSender.sendMessage(sender, Message.Generic.NOT_PLAYER)
       return true
     }
-    if (args.isEmpty() || (!sender.hasPermission("lib.pvp.manage"))) {
+    if (args.isEmpty()||(!sender.hasPermission("lib.pvp.manage"))) {
       inventory.open(sender)
       return true
     }
 
-    if (args[0] == "respawn") {
+    if(args[0] == "respawn") {
       if (args.size == 1) {
         PVPListener.tpPlayerToArena(sender, plugin)
         return true
+      } else {
+        var condition = false
+        Bukkit.getOnlinePlayers().forEach { player ->
+          if (player.name == args[1]) {
+            PVPListener.tpPlayerToArena(player, plugin)
+            condition = true
+          }
+        }
+        if (!condition) {
+          MessageSender.sendMessage(sender, Message.Player.NOT_FOUND)
+        }
+        return true
       }
-
-      Bukkit.getOnlinePlayers().firstOrNull { it.name == args[1] }?.let {
-        PVPListener.tpPlayerToArena(it, plugin)
-      } ?: MessageSender.sendMessage(sender, Message.Player.NOT_FOUND)
-
-      return true
     }
     if (args[0] == "addspawn") {
       val location = sender.location
@@ -50,9 +56,9 @@ class PVPCommandExecutor(plugin1: JavaPlugin) : CommandExecutor, PVPMenu(plugin1
         return true
       }
       val locationMap = mutableMapOf<String, Double>()
-      locationMap["x"] = location.blockX.toDouble() + 0.5 //Centre on block
+      locationMap["x"] = location.blockX.toDouble()+0.5 //Centre on block
       locationMap["y"] = location.blockY.toDouble()
-      locationMap["z"] = location.blockZ.toDouble() + 0.5
+      locationMap["z"] = location.blockZ.toDouble()+0.5
       val newSpawnLocations = spawnLocations.plus(locationMap)
       plugin.config.set("pvp.spawn-locations", newSpawnLocations)
       plugin.saveConfig()

@@ -88,7 +88,9 @@ class UserManager {
         return
       }
       CompletableFuture.supplyAsync<Any?> {
-        users.values.forEach { saveUser(it) }
+        for (user in users.values) {
+          saveUser(user)
+        }
         plugin.logger.info("Saved " + users.size + " users!")
         null
       }

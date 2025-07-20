@@ -11,8 +11,8 @@ class MotdHandler {
     var motd : String? = null
 
     @JvmStatic
-    fun handleCommand(sender: CommandSender, args: Array<out String?>): Boolean {
-      if (args.isEmpty()) {
+    fun handleCommand(sender: CommandSender, args: Array<out String?>?): Boolean {
+      if (args?.size == 0 || args == null) {
         motd = null
         MessageSender.sendMessage(sender, "MOTD reset!")
         return true
