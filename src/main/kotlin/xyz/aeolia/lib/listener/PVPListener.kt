@@ -1,6 +1,6 @@
 package xyz.aeolia.lib.listener
 
-import xyz.aeolia.lib.serializable.LibBlock
+import xyz.aeolia.lib.data.LibBlock
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
@@ -16,7 +16,7 @@ import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.plugin.java.JavaPlugin
 import xyz.aeolia.lib.manager.UserManager
 import xyz.aeolia.lib.sender.MessageSender
-import xyz.aeolia.lib.serializable.User
+import xyz.aeolia.lib.data.User
 import xyz.aeolia.lib.utils.Message
 
 class PVPListener(val plugin: JavaPlugin) : Listener {

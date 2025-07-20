@@ -1,4 +1,4 @@
-package xyz.aeolia.lib.serializable
+package xyz.aeolia.lib.data
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

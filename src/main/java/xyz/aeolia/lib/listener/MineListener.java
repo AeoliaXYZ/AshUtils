@@ -1,6 +1,6 @@
 package xyz.aeolia.lib.listener;
 
-import xyz.aeolia.lib.serializable.LibBlock;
+import xyz.aeolia.lib.data.LibBlock;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;

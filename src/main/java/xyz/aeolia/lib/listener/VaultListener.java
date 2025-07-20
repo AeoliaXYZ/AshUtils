@@ -10,7 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.aeolia.lib.manager.EconManager;
 import xyz.aeolia.lib.sender.MessageSender;
-import xyz.aeolia.lib.serializable.User;
+import xyz.aeolia.lib.data.User;
 import xyz.aeolia.lib.manager.UserManager;
 
 public class VaultListener implements Listener {
