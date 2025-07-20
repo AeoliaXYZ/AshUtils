@@ -28,7 +28,7 @@ public class BukkitEventListener implements Listener {
 
   private final JavaPlugin plugin;
   private final Pattern pattern = Pattern.compile("^:[A-Z]{4,}$");
-  private Essentials ess;
+  private final Essentials ess;
 
   public BukkitEventListener(JavaPlugin plugin) {
     this.plugin = plugin;
@@ -39,7 +39,7 @@ public class BukkitEventListener implements Listener {
   public void onPlayerQuit(PlayerQuitEvent event) {
     UserManager.getUser(event.getPlayer()).setOnline(false);
     new ROEQuitTask(this.plugin).runTaskLater(this.plugin, 3);
-    new UserPruneTask(event.getPlayer()).runTaskLater(this.plugin, plugin.getConfig().getLong("prune-time"));
+    new UserPruneTask(event.getPlayer(), plugin).runTaskLater(this.plugin, plugin.getConfig().getLong("prune-time"));
 
   }
 
