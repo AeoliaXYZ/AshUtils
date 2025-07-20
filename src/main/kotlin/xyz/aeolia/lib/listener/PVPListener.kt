@@ -29,7 +29,7 @@ class PVPListener(val plugin: JavaPlugin) : Listener {
   }
 
   @EventHandler(priority = EventPriority.LOWEST)
-  fun onBlockPlace (event: BlockPlaceEvent) {
+  fun onBlockPlace(event: BlockPlaceEvent) {
     val player = event.player
     val user = processBlockEvent(player, event.isCancelled, plugin) ?: return
     if (!user.modMode) {
@@ -47,8 +47,8 @@ class PVPListener(val plugin: JavaPlugin) : Listener {
   @EventHandler(priority = EventPriority.LOWEST)
   fun onBlockBreak(event: BlockBreakEvent) {
     val location = event.block.location
-    val worldBlock = globalBlocks[location]?: return
-    val user = worldBlock.placer?: return
+    val worldBlock = globalBlocks[location] ?: return
+    val user = worldBlock.placer ?: return
     user.pvpBlocks.remove(worldBlock)
   }
 
@@ -56,7 +56,7 @@ class PVPListener(val plugin: JavaPlugin) : Listener {
   fun onPlayerWorldChange(event: PlayerChangedWorldEvent) {
     val player = event.player
     val from = event.from
-    if (from.name==plugin.config.getString("pvp.world")) return
+    if (from.name == plugin.config.getString("pvp.world")) return
     clearBlocks(UserManager.getUser(player))
   }
 
@@ -64,7 +64,7 @@ class PVPListener(val plugin: JavaPlugin) : Listener {
   fun onPlayerDeath(event: PlayerDeathEvent) {
     val player = event.player
     val world = player.world
-    if(world.name == plugin.config.getString("pvp.world")) return
+    if (world.name == plugin.config.getString("pvp.world")) return
     clearBlocks(UserManager.getUser(player))
   }
 
@@ -81,7 +81,7 @@ class PVPListener(val plugin: JavaPlugin) : Listener {
 
     fun processBlockEvent(player: Player, cancelled: Boolean, plugin: JavaPlugin): User? {
       val world = player.location.world
-      if (world.name==plugin.config.getString("pvp.world")) {
+      if (world.name == plugin.config.getString("pvp.world")) {
         return null
       }
       if (cancelled) return null
@@ -89,20 +89,26 @@ class PVPListener(val plugin: JavaPlugin) : Listener {
     }
 
     fun tpPlayerToArena(player: Player, plugin: JavaPlugin) {
-      val spawnLocations = plugin.config.getList("pvp.spawn-locations") ?: run {
-        MessageSender.sendMessage(player, "pvp.spawn-locations doesn't exist! Please contact an administrator.")
-        return
-      }
-      if (spawnLocations.isEmpty()) {
-        plugin.logger.warning("PVP spawn labels are not configured!")
-        return
-      }
-      val spawnLocation: Map<String, Double>
-      try {
+
+      val spawnLocation = run run@{
+        val spawnLocations = plugin.config.getList("pvp.spawn-locations") ?: run inner@{
+          MessageSender.sendMessage(player, "pvp.spawn-locations doesn't exist! Please contact an administrator.")
+          return@run null
+        }
+
+        if (spawnLocations.isEmpty()) {
+          plugin.logger.warning("PVP spawn labels are not configured!")
+          return@run null
+        }
+
         @Suppress("UNCHECKED_CAST")
-        spawnLocation = spawnLocations.random() as Map<String, Double>
-      } catch(_: ClassCastException) {
-        plugin.logger.warning("PVP spawn location could not be correctly cast")
+        (spawnLocations.random() as? Map<String, Double>) ?: run {
+          plugin.logger.warning("PVP spawn location could not be correctly cast")
+          return@run null
+        }
+
+      } ?: run {
+        MessageSender.sendMessage(player, Message.Error.TELEPORT_FAIL)
         return
       }
 
@@ -119,7 +125,7 @@ class PVPListener(val plugin: JavaPlugin) : Listener {
 
         Location(Bukkit.getServer().getWorld(plugin.config.getString("pvp.world")!!), x, y, z)
       } ?: run {
-        MessageSender.sendMessage(player, Message.Error.GENERIC)
+        MessageSender.sendMessage(player, Message.Error.TELEPORT_FAIL)
         return
       }
       player.teleport(location)
