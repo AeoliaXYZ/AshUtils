@@ -33,17 +33,16 @@ class PVPCommandExecutor(plugin1: JavaPlugin) : CommandExecutor, PVPMenu(plugin1
         return true
       }
 
-      if (run {
-          Bukkit.getOnlinePlayers().forEach { player ->
-            if (player.name == args[1]) {
-              PVPListener.tpPlayerToArena(player, plugin)
-              return@run false
-            }
+      run {
+        Bukkit.getOnlinePlayers().forEach { player ->
+          if (player.name == args[1]) {
+            PVPListener.tpPlayerToArena(player, plugin)
+            return@run
           }
-          true
-        }) {
+        }
         MessageSender.sendMessage(sender, Message.Player.NOT_FOUND)
       }
+
       return true
     }
     if (args[0] == "addspawn") {
