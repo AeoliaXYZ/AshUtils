@@ -17,6 +17,7 @@ import org.bukkit.plugin.java.JavaPlugin
 import xyz.aeolia.lib.manager.UserManager
 import xyz.aeolia.lib.sender.MessageSender
 import xyz.aeolia.lib.serializable.User
+import xyz.aeolia.lib.utils.Message
 
 class PVPListener(val plugin: JavaPlugin) : Listener {
   val playersWarned = mutableListOf<Player>()
@@ -104,12 +105,23 @@ class PVPListener(val plugin: JavaPlugin) : Listener {
         plugin.logger.warning("PVP spawn location could not be correctly cast")
         return
       }
-      val location = Location(
-            Bukkit.getServer().getWorld(plugin.config.getString("pvp.world")!!),
-            spawnLocation["x"]?: (-100).toDouble(),
-            spawnLocation["y"]?: (-100).toDouble(),
-            spawnLocation["z"]?: (-100).toDouble()
-        )
+
+      val location = run {
+        val x = spawnLocation["x"] ?: return@run null.also {
+          plugin.logger.warning("Invalid PVP spawn location: x coordinate is missing")
+        }
+        val y = spawnLocation["y"] ?: return@run null.also {
+          plugin.logger.warning("Invalid PVP spawn location: y coordinate is missing")
+        }
+        val z = spawnLocation["z"] ?: return@run null.also {
+          plugin.logger.warning("Invalid PVP spawn location: z coordinate is missing")
+        }
+
+        Location(Bukkit.getServer().getWorld(plugin.config.getString("pvp.world")!!), x, y, z)
+      } ?: run {
+        MessageSender.sendMessage(player, Message.Error.GENERIC)
+        return
+      }
       player.teleport(location)
     }
   }
