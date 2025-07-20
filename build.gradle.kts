@@ -37,7 +37,7 @@ repositories {
 
 dependencies {
     implementation("cymru.asheiou.inv:smart-invs:1.2.8.1")
-    implementation("org.apache.commons:commons-lang3:3.14.0")
+    implementation("org.apache.commons:commons-lang3:3.18.0")
     implementation("org.apache.commons:commons-text:1.1")
     implementation(libs.cymru.asheiou.configmanager)
     implementation(libs.org.jetbrains.kotlin.kotlin.stdlib.jdk8)
@@ -55,7 +55,7 @@ dependencies {
 }
 
 group = "xyz.aeolia"
-version = "2.0.1-dev1"
+version = "2.0.1-dev2"
 description = "AeoliaLib"
 java.sourceCompatibility = JavaVersion.VERSION_21
 
