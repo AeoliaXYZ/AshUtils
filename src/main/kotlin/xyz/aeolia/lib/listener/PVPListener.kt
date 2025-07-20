@@ -1,6 +1,6 @@
 package xyz.aeolia.lib.listener
 
-import hk.siggi.bukkit.plugcubebuildersin.world.WorldBlock
+import xyz.aeolia.lib.serializable.LibBlock
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
@@ -33,8 +33,8 @@ class PVPListener(val plugin: JavaPlugin) : Listener {
     val player = event.player
     val user = processBlockEvent(player, event.isCancelled, plugin) ?: return
     if (!user.modMode) {
-      user.pvpBlocks.add(WorldBlock(event.block))
-      globalBlocks.put(event.block.location, WorldBlock(event.block))
+      user.pvpBlocks.add(LibBlock(event.block))
+      globalBlocks.put(event.block.location, LibBlock(event.block))
       if (player !in playersWarned) {
         MessageSender.sendMessage(player, "Blocks placed here will be deleted when you die or leave the world!")
         playersWarned.add(player)
@@ -69,11 +69,11 @@ class PVPListener(val plugin: JavaPlugin) : Listener {
   }
 
   companion object {
-    val globalBlocks = mutableMapOf<(Location), WorldBlock>()
+    val globalBlocks = mutableMapOf<(Location), LibBlock>()
 
     fun clearBlocks(user: User) {
       user.pvpBlocks.forEach { worldBlock ->
-        worldBlock.bukkitBlock.apply {
+        worldBlock.block.apply {
           val wasSolid = isSolid
           type = Material.AIR
           if (!wasSolid) state.update(true)
