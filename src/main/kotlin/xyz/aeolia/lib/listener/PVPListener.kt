@@ -92,7 +92,7 @@ class PVPListener(val plugin: JavaPlugin) : Listener {
 
       val spawnLocation = run run@{
         val spawnLocations = plugin.config.getList("pvp.spawn-locations") ?: run inner@{
-          MessageSender.sendMessage(player, "pvp.spawn-locations doesn't exist! Please contact an administrator.")
+          plugin.logger.warning("pvp.spawn-locations doesn't exist in the config.yml")
           return@run null
         }
 
