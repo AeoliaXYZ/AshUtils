@@ -72,9 +72,13 @@ class PVPListener(val plugin: JavaPlugin) : Listener {
     val globalBlocks = mutableMapOf<(Location), WorldBlock>()
 
     fun clearBlocks(user: User) {
-      user.pvpBlocks.forEach {
-        it.bukkitBlock.type = Material.AIR
-        globalBlocks.remove(it.bukkitBlock.location)
+      user.pvpBlocks.forEach { worldBlock ->
+        worldBlock.bukkitBlock.apply {
+          val wasSolid = isSolid
+          type = Material.AIR
+          if (!wasSolid) state.update(true)
+          globalBlocks.remove(location)
+        }
       }
       user.pvpBlocks.clear()
     }
