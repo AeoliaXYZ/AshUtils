@@ -16,7 +16,7 @@ import xyz.aeolia.lib.manager.StatusManager;
 import xyz.aeolia.lib.manager.UserManager;
 import xyz.aeolia.lib.manager.UserMapManager;
 import xyz.aeolia.lib.sender.MessageSender;
-import xyz.aeolia.lib.serializable.User;
+import xyz.aeolia.lib.data.User;
 import xyz.aeolia.lib.task.MessageLaterTask;
 import xyz.aeolia.lib.task.ROEQuitTask;
 import xyz.aeolia.lib.task.UserPruneTask;

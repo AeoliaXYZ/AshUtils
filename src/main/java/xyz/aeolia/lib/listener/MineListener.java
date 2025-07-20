@@ -1,6 +1,6 @@
 package xyz.aeolia.lib.listener;
 
-import hk.siggi.bukkit.plugcubebuildersin.world.WorldBlock;
+import xyz.aeolia.lib.data.LibBlock;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -34,7 +34,7 @@ public class MineListener implements Listener {
   private static final BlockFace[] faces = new BlockFace[]{BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.WEST, BlockFace.EAST};
   private final JavaPlugin plugin;
   private final Map<Material, String> materials = new HashMap<>();
-  private final Map<WorldBlock, Long> blocksFound = new HashMap<>();
+  private final Map<LibBlock, Long> blocksFound = new HashMap<>();
 
   public MineListener(JavaPlugin plugin) {
     this.plugin = plugin;
@@ -79,8 +79,8 @@ public class MineListener implements Listener {
 
   public void tick() {
     long now = System.currentTimeMillis();
-    for (Iterator<WorldBlock> iterator = blocksFound.keySet().iterator(); iterator.hasNext(); ) {
-      WorldBlock wb = iterator.next();
+    for (Iterator<LibBlock> iterator = blocksFound.keySet().iterator(); iterator.hasNext(); ) {
+      LibBlock wb = iterator.next();
       Long timeL = blocksFound.get(wb);
       if (timeL == null) {
         iterator.remove();
@@ -100,14 +100,14 @@ public class MineListener implements Listener {
     if (!materials.containsKey(material)) {
       return;
     }
-    WorldBlock wb = new WorldBlock(block);
+    LibBlock wb = new LibBlock(block);
     if (blocksFound.containsKey(wb)) {
       return;
     }
     Set<Block> findSimilarAdjacentBlocks = findSimilarAdjacentBlocks(block);
     long now = System.currentTimeMillis();
     for (Block b : findSimilarAdjacentBlocks) {
-      blocksFound.put(new WorldBlock(b), now);
+      blocksFound.put(new LibBlock(b), now);
     }
     Player p = event.getPlayer();
     String materialName = materials.get(material);

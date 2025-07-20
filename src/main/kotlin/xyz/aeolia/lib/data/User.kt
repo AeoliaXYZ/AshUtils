@@ -1,4 +1,4 @@
-package xyz.aeolia.lib.serializable
+package xyz.aeolia.lib.data
 
 import hk.siggi.bukkit.plugcubebuildersin.world.WorldBlock
 import kotlinx.serialization.SerialName

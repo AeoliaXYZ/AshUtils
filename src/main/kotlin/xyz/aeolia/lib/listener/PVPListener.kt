@@ -1,6 +1,6 @@
 package xyz.aeolia.lib.listener
 
-import hk.siggi.bukkit.plugcubebuildersin.world.WorldBlock
+import xyz.aeolia.lib.data.LibBlock
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
@@ -16,7 +16,8 @@ import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.plugin.java.JavaPlugin
 import xyz.aeolia.lib.manager.UserManager
 import xyz.aeolia.lib.sender.MessageSender
-import xyz.aeolia.lib.serializable.User
+import xyz.aeolia.lib.data.User
+import xyz.aeolia.lib.utils.Message
 
 class PVPListener(val plugin: JavaPlugin) : Listener {
   val playersWarned = mutableListOf<Player>()
@@ -28,12 +29,12 @@ class PVPListener(val plugin: JavaPlugin) : Listener {
   }
 
   @EventHandler(priority = EventPriority.LOWEST)
-  fun onBlockPlace (event: BlockPlaceEvent) {
+  fun onBlockPlace(event: BlockPlaceEvent) {
     val player = event.player
     val user = processBlockEvent(player, event.isCancelled, plugin) ?: return
     if (!user.modMode) {
-      user.pvpBlocks.add(WorldBlock(event.block))
-      globalBlocks.put(event.block.location, WorldBlock(event.block))
+      user.pvpBlocks.add(LibBlock(event.block))
+      globalBlocks.put(event.block.location, LibBlock(event.block))
       if (player !in playersWarned) {
         MessageSender.sendMessage(player, "Blocks placed here will be deleted when you die or leave the world!")
         playersWarned.add(player)
@@ -46,8 +47,8 @@ class PVPListener(val plugin: JavaPlugin) : Listener {
   @EventHandler(priority = EventPriority.LOWEST)
   fun onBlockBreak(event: BlockBreakEvent) {
     val location = event.block.location
-    val worldBlock = globalBlocks[location]?: return
-    val user = worldBlock.placer?: return
+    val worldBlock = globalBlocks[location] ?: return
+    val user = worldBlock.placer ?: return
     user.pvpBlocks.remove(worldBlock)
   }
 
@@ -55,7 +56,7 @@ class PVPListener(val plugin: JavaPlugin) : Listener {
   fun onPlayerWorldChange(event: PlayerChangedWorldEvent) {
     val player = event.player
     val from = event.from
-    if (from.name==plugin.config.getString("pvp.world")) return
+    if (from.name == plugin.config.getString("pvp.world")) return
     clearBlocks(UserManager.getUser(player))
   }
 
@@ -63,24 +64,28 @@ class PVPListener(val plugin: JavaPlugin) : Listener {
   fun onPlayerDeath(event: PlayerDeathEvent) {
     val player = event.player
     val world = player.world
-    if(world.name == plugin.config.getString("pvp.world")) return
+    if (world.name == plugin.config.getString("pvp.world")) return
     clearBlocks(UserManager.getUser(player))
   }
 
   companion object {
-    val globalBlocks = mutableMapOf<(Location), WorldBlock>()
+    val globalBlocks = mutableMapOf<(Location), LibBlock>()
 
     fun clearBlocks(user: User) {
-      user.pvpBlocks.forEach { block ->
-        block.bukkitBlock.type = Material.AIR
-        globalBlocks.remove(block.bukkitBlock.location)
+      user.pvpBlocks.forEach { worldBlock ->
+        worldBlock.block.apply {
+          val wasSolid = isSolid
+          type = Material.AIR
+          if (!wasSolid) state.update(true)
+          globalBlocks.remove(location)
+        }
       }
       user.pvpBlocks.clear()
     }
 
     fun processBlockEvent(player: Player, cancelled: Boolean, plugin: JavaPlugin): User? {
       val world = player.location.world
-      if (world.name==plugin.config.getString("pvp.world")) {
+      if (world.name == plugin.config.getString("pvp.world")) {
         return null
       }
       if (cancelled) return null
@@ -88,28 +93,45 @@ class PVPListener(val plugin: JavaPlugin) : Listener {
     }
 
     fun tpPlayerToArena(player: Player, plugin: JavaPlugin) {
-      val spawnLocations = plugin.config.getList("pvp.spawn-locations") ?: run {
-        MessageSender.sendMessage(player, "pvp.spawn-locations doesn't exist! Please contact an administrator.")
-        return
-      }
-      if (spawnLocations.isEmpty()) {
-        plugin.logger.warning("PVP spawn labels are not configured!")
-        return
-      }
-      val spawnLocation: Map<String, Double>
-      try {
+
+      val spawnLocation = run run@{
+        val spawnLocations = plugin.config.getList("pvp.spawn-locations") ?: run inner@{
+          plugin.logger.warning("pvp.spawn-locations doesn't exist in the config.yml")
+          return@run null
+        }
+
+        if (spawnLocations.isEmpty()) {
+          plugin.logger.warning("PVP spawn labels are not configured!")
+          return@run null
+        }
+
         @Suppress("UNCHECKED_CAST")
-        spawnLocation = spawnLocations.random() as Map<String, Double>
-      } catch(_: ClassCastException) {
-        plugin.logger.warning("PVP spawn location could not be correctly cast")
+        (spawnLocations.random() as? Map<String, Double>) ?: run {
+          plugin.logger.warning("PVP spawn location could not be correctly cast")
+          return@run null
+        }
+
+      } ?: run {
+        MessageSender.sendMessage(player, Message.Error.TELEPORT_FAIL)
         return
       }
-      val location = Location(
-            Bukkit.getServer().getWorld(plugin.config.getString("pvp.world")!!),
-            spawnLocation["x"]?: (-100).toDouble(),
-            spawnLocation["y"]?: (-100).toDouble(),
-            spawnLocation["z"]?: (-100).toDouble()
-        )
+
+      val location = run {
+        val x = spawnLocation["x"] ?: return@run null.also {
+          plugin.logger.warning("Invalid PVP spawn location: x coordinate is missing")
+        }
+        val y = spawnLocation["y"] ?: return@run null.also {
+          plugin.logger.warning("Invalid PVP spawn location: y coordinate is missing")
+        }
+        val z = spawnLocation["z"] ?: return@run null.also {
+          plugin.logger.warning("Invalid PVP spawn location: z coordinate is missing")
+        }
+
+        Location(Bukkit.getServer().getWorld(plugin.config.getString("pvp.world")!!), x, y, z)
+      } ?: run {
+        MessageSender.sendMessage(player, Message.Error.TELEPORT_FAIL)
+        return
+      }
       player.teleport(location)
     }
   }

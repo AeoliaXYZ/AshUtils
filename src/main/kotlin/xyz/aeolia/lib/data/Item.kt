@@ -1,4 +1,4 @@
-package xyz.aeolia.lib.serializable
+package xyz.aeolia.lib.data
 
 import io.papermc.paper.registry.RegistryAccess
 import io.papermc.paper.registry.RegistryKey

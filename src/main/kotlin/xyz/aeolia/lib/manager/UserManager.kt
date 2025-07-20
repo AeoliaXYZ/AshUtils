@@ -5,7 +5,7 @@ import kotlinx.serialization.json.Json
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.plugin.java.JavaPlugin
-import xyz.aeolia.lib.serializable.User
+import xyz.aeolia.lib.data.User
 import xyz.aeolia.lib.task.UserPruneTask
 import java.io.File
 import java.io.FileNotFoundException
