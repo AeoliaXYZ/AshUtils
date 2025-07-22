@@ -6,7 +6,7 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.TabExecutor
 import org.bukkit.plugin.java.JavaPlugin
 import xyz.aeolia.lib.command.NotEnabledCommandExecutor
-import xyz.aeolia.lib.command.PVPCommandExecutor
+import xyz.aeolia.lib.command.user.PVPCommandExecutor
 import xyz.aeolia.lib.command.admin.BroadcastCommandExecutor
 import xyz.aeolia.lib.command.admin.FakeTabExecutor
 import xyz.aeolia.lib.command.admin.MiniMessageCommandExecutor
