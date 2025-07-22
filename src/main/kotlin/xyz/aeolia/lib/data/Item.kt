@@ -30,9 +30,9 @@ class Item(
       meta.displayName(mm.deserialize(displayName))
     }
 
-    if (this.lore != null) {
+    this.lore.let {
       val lore = mutableListOf<Component>()
-      this.lore.forEach {
+      this.lore!!.forEach {
         lore.add(mm.deserialize(it))
       }
       meta.lore(lore)
