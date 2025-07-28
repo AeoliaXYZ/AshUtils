@@ -10,6 +10,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.aeolia.lib.sender.WebhookSender;
+import xyz.aeolia.lib.task.AFKTask;
 import xyz.aeolia.lib.task.VanishTask;
 import xyz.aeolia.lib.manager.UserManager;
 
@@ -33,24 +34,7 @@ public class EssEventListener implements Listener {
 
   @EventHandler(priority = EventPriority.LOW)
   public void onAfkStatusChange(AfkStatusChangeEvent event) {
-    if (UserManager.getUser(event.getAffected().getBase()).getVanish()) return;
-    Server server = this.plugin.getServer();
-    Pattern colourpattern = Pattern.compile("§(.)");
-    Matcher matcher = colourpattern.matcher(event.getAffected().getDisplayName());
-    String clean = matcher.replaceAll("");
-    URI uri;
-    try {
-      uri = new URI(Objects.requireNonNull(plugin.getConfig().getString("discord.afk-webhook")));
-    } catch (URISyntaxException e) {
-      plugin.getLogger().severe("Invalid discord.afk-webhook URI!");
-      return;
-    }
-
-    HttpResponse<String> response = WebhookSender.postWebhook(uri, "**" + clean + "** is " + (event.getValue() ? "now" : "no longer") + " AFK.");
-
-    if (response.statusCode() != 204) {
-      plugin.getLogger().severe("afk-webhook returned: " + response.statusCode() + " " + response.body());
-    }
+    new AFKTask(event, plugin).runTaskLater(plugin, 2);
   }
 
   @EventHandler(priority = EventPriority.LOWEST)
