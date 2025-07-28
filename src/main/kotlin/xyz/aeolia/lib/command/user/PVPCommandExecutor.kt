@@ -19,7 +19,7 @@ class PVPCommandExecutor(p: JavaPlugin) : CommandExecutor, PVPMenu(p) {
     args: Array<out String>
   ): Boolean {
     if (sender !is Player) {
-      MessageSender.Companion.sendMessage(sender, Message.Generic.NOT_PLAYER)
+      MessageSender.sendMessage(sender, Message.Generic.NOT_PLAYER)
       return true
     }
     if (args.isEmpty() || (!sender.hasPermission("lib.pvp.manage"))) {
@@ -29,24 +29,24 @@ class PVPCommandExecutor(p: JavaPlugin) : CommandExecutor, PVPMenu(p) {
 
     if (args[0] == "respawn") {
       if (args.size == 1) {
-        PVPListener.Companion.tpPlayerToArena(sender, plugin)
+        PVPListener.tpPlayerToArena(sender, plugin)
         return true
       }
 
       Bukkit.getOnlinePlayers().firstOrNull { it.name == args[1] }?.let {
-        PVPListener.Companion.tpPlayerToArena(it, plugin)
-      } ?: MessageSender.Companion.sendMessage(sender, Message.Player.NOT_FOUND)
+        PVPListener.tpPlayerToArena(it, plugin)
+      } ?: MessageSender.sendMessage(sender, Message.Player.NOT_FOUND)
 
       return true
     }
     if (args[0] == "addspawn") {
       val location = sender.location
       if (sender.world.name != plugin.config.getString("pvp.world")) {
-        MessageSender.Companion.sendMessage(sender, "You can only run this command in the PVP world!")
+        MessageSender.sendMessage(sender, "You can only run this command in the PVP world!")
         return true
       }
       val spawnLocations = plugin.config.getList("pvp.spawn-locations") ?: run {
-        MessageSender.Companion.sendMessage(sender, Message.Error.CONFIG.format("pvp.spawn-locations"))
+        MessageSender.sendMessage(sender, Message.Error.CONFIG.format("pvp.spawn-locations"))
         return true
       }
       val locationMap = mutableMapOf<String, Double>()
@@ -57,10 +57,10 @@ class PVPCommandExecutor(p: JavaPlugin) : CommandExecutor, PVPMenu(p) {
       plugin.config.set("pvp.spawn-locations", newSpawnLocations)
       plugin.saveConfig()
       plugin.reloadConfig()
-      MessageSender.Companion.sendMessage(sender, "Location added.")
+      MessageSender.sendMessage(sender, "Location added.")
       return true
     }
-    MessageSender.Companion.sendMessage(sender, Message.Generic.COMMAND_USAGE)
+    MessageSender.sendMessage(sender, Message.Generic.COMMAND_USAGE)
     return false
   }
 }
