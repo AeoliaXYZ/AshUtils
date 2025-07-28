@@ -14,86 +14,84 @@ import java.io.IOException
 import java.util.*
 import java.util.concurrent.CompletableFuture
 
-class UserManager {
+object UserManager {
 
-  companion object {
-    private val users: HashMap<UUID, User> = HashMap()
-    private lateinit var plugin: JavaPlugin
-    private lateinit var folder: File
+  private val users: HashMap<UUID, User> = HashMap()
+  private lateinit var plugin: JavaPlugin
+  private lateinit var folder: File
 
-    @JvmStatic
-    fun init(plugin: JavaPlugin) {
-      this.plugin = plugin
-      folder = File(plugin.dataFolder, "/users/")
-      if (!folder.exists()) {
-        if (!folder.mkdir()) {
-          plugin.logger.severe("Could not create directory ${folder.absolutePath}.")
-          Bukkit.getPluginManager().disablePlugin(plugin)
-        }
+  @JvmStatic
+  fun init(plugin: JavaPlugin) {
+    this.plugin = plugin
+    folder = File(plugin.dataFolder, "/users/")
+    if (!folder.exists()) {
+      if (!folder.mkdir()) {
+        plugin.logger.severe("Could not create directory ${folder.absolutePath}.")
+        Bukkit.getPluginManager().disablePlugin(plugin)
       }
     }
+  }
 
-    @JvmStatic
-    fun getUser(player: OfflinePlayer): User {
-      val uuid = player.uniqueId
-      users[uuid]?.let { return it }
+  @JvmStatic
+  fun getUser(player: OfflinePlayer): User {
+    val uuid = player.uniqueId
+    users[uuid]?.let { return it }
 
-      val file = File(folder, "${uuid}.json")
-      val user: User = run {
-        if (!file.exists()) {
-          return@run User(uuid = uuid, online = player.isOnline)
-        }
-        try {
-          return@run Json.decodeFromString(file.readText())!!
-        } catch (_: FileNotFoundException) {
-          plugin.logger.severe("Could not read file ${file.absolutePath}.")
-          return@run null
-        }
-      }?: run { return User() }
-      putUser(user)
-
-      if (!user.online) {
-        UserPruneTask(player, plugin).runTaskLater(plugin, plugin.config.getLong("prune-time"))
+    val file = File(folder, "${uuid}.json")
+    val user: User = run {
+      if (!file.exists()) {
+        return@run User(uuid = uuid, online = player.isOnline)
       }
-
-      return user
-    }
-
-    @JvmStatic
-    fun putUser(user: User) {
-      users.put(user.uuid!!, user)
-    }
-
-    @JvmStatic
-    fun removeUser(player: OfflinePlayer) {
-      val uuid = player.uniqueId
-      saveUser(getUser(player)) // save user to prevent data loss from prune
-      users.remove(uuid)
-    }
-
-    @JvmStatic
-    fun saveUser(user: User) {
-      if (user.uuid == null) return // Prevent data loss from saving malformed users
-      val file = File(folder, user.uuid.toString() + ".json")
       try {
-        val fileWriter = FileWriter(file)
-        fileWriter.write(Json.encodeToString(user))
-        fileWriter.close()
-      } catch (e: IOException) {
-        throw RuntimeException(e)
+        return@run Json.decodeFromString(file.readText())!!
+      } catch (_: FileNotFoundException) {
+        plugin.logger.severe("Could not read file ${file.absolutePath}.")
+        return@run null
       }
+    } ?: run { return User() }
+    putUser(user)
+
+    if (!user.online) {
+      UserPruneTask(player, plugin).runTaskLater(plugin, plugin.config.getLong("prune-time"))
     }
 
-    @JvmStatic
-    fun saveUsers() {
-      if (users.isEmpty()) {
-        return
-      }
-      CompletableFuture.supplyAsync<Any?> {
-        users.values.forEach { saveUser(it) }
-        plugin.logger.info("Saved " + users.size + " users!")
-        null
-      }
+    return user
+  }
+
+  @JvmStatic
+  fun putUser(user: User) {
+    users.put(user.uuid!!, user)
+  }
+
+  @JvmStatic
+  fun removeUser(player: OfflinePlayer) {
+    val uuid = player.uniqueId
+    saveUser(getUser(player)) // save user to prevent data loss from prune
+    users.remove(uuid)
+  }
+
+  @JvmStatic
+  fun saveUser(user: User) {
+    if (user.uuid == null) return // Prevent data loss from saving malformed users
+    val file = File(folder, user.uuid.toString() + ".json")
+    try {
+      val fileWriter = FileWriter(file)
+      fileWriter.write(Json.encodeToString(user))
+      fileWriter.close()
+    } catch (e: IOException) {
+      throw RuntimeException(e)
+    }
+  }
+
+  @JvmStatic
+  fun saveUsers() {
+    if (users.isEmpty()) {
+      return
+    }
+    CompletableFuture.supplyAsync<Any?> {
+      users.values.forEach { saveUser(it) }
+      plugin.logger.info("Saved " + users.size + " users!")
+      null
     }
   }
 }
