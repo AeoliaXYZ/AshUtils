@@ -17,9 +17,16 @@ import static xyz.aeolia.lib.utils.Message.Generic.COMMAND_USAGE;
 
 public class UtilTabExecutor implements TabExecutor {
   JavaPlugin plugin;
+  final List<SubCommandHandler> subCommands;
 
   public UtilTabExecutor(JavaPlugin plugin) {
     this.plugin = plugin;
+    subCommands = List.of(
+            new ReloadHandler(plugin),
+            ClearChatHandler.INSTANCE,
+            MotdHandler.INSTANCE
+
+    );
   }
 
   @Override
@@ -28,21 +35,19 @@ public class UtilTabExecutor implements TabExecutor {
       MessageSender.sendMessage(sender, "AeoliaLib v" + plugin.getDescription().getVersion() + " enabled.", true);
       return true;
     }
+    List<SubCommandHandler> subCommands = new ArrayList<>(this.subCommands);
+    subCommands.add(new StatusToggleHandler(args[0]));
     String[] subCommandArgs = Arrays.copyOfRange(args, 1, args.length);
-    return switch (args[0]) {
-      //----------------Reload----------------//
-      case "reload" -> ReloadHandler.doUtilReload(sender, plugin);
-      //------------RestartOnEmpty-----------//
-      case "restartonempty", "roe", "lc", "lockchat" ->
-              StatusToggleHandler.doToggleStatus(sender, subCommandArgs, args[0]);
-      case "clearchat", "cc" -> ClearChatHandler.doClearChat();
-      case "motd" -> MotdHandler.handleCommand(sender, subCommandArgs);
-      default -> {
-        MessageSender.sendMessage(sender, COMMAND_USAGE, true);
-        MessageSender.sendMessage(sender,"/util reload/restartonempty/motd/clearchat/lockchat.", false);
-        yield true;
+
+    for (SubCommandHandler subCommand : subCommands) {
+      if (subCommand.getAlias().contains(args[0])) {
+        return subCommand.handle(sender, subCommandArgs);
       }
-    };
+    }
+
+    MessageSender.sendMessage(sender, COMMAND_USAGE, true);
+    MessageSender.sendMessage(sender, "/util reload/restartonempty/motd/clearchat/lockchat.", false);
+    return true;
   }
 
   @Override

@@ -1,19 +1,27 @@
 package xyz.aeolia.lib.command.admin.util;
 
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 import xyz.aeolia.lib.manager.StatusManager;
 import xyz.aeolia.lib.sender.MessageSender;
+
+import java.util.List;
 
 import static xyz.aeolia.lib.utils.Message.Generic.COMMAND_USAGE;
 import static xyz.aeolia.lib.utils.Message.Generic.TOO_MANY_ARGS;
 
-public class StatusToggleHandler {
-  public static boolean doToggleStatus(CommandSender sender, String[] args, String instance) {
-    instance = switch (instance) {
+public class StatusToggleHandler extends SubCommandHandler {
+  final String instance;
+  public StatusToggleHandler(String instance) {
+    this.instance = switch (instance) {
       case "roe" -> "restartonempty";
       case "lc" -> "lockchat";
       default -> instance;
     };
+  }
+
+  @Override
+  public boolean handle(@NotNull CommandSender sender, String @NotNull [] args) {
     String instanceFormatted = switch (instance) {
       case "restartonempty" -> "RestartOnEmpty";
       case "lockchat" -> "Chat lock";
@@ -47,6 +55,11 @@ public class StatusToggleHandler {
     StatusManager.setStatus(instance, toSet);
     MessageSender.sendMessage(sender, instanceFormatted + " is " + (toSet ? "enabled" : "disabled") + ".", true);
     return true;
+  }
+
+  @Override
+  public @NotNull List<@NotNull String> getAlias() {
+    return List.of("roe", "restartonempty", "lc", "lockchat");
   }
 }
 
