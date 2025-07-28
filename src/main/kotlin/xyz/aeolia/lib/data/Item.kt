@@ -19,9 +19,9 @@ class Item(
   val enchantments: MutableMap<String, Int>? = null
 ) {
   fun loadStack(): ItemStack? {
-    val mm = MessageSender.Companion.miniMessage
+    val mm = MessageSender.miniMessage
     val material = Material.getMaterial(this.material.uppercase())?: run {
-      MessageSender.Companion.sendMessage(Bukkit.getConsoleSender(), "Material ${this.material.uppercase()} not found")
+      MessageSender.sendMessage(Bukkit.getConsoleSender(), "Material ${this.material.uppercase()} not found")
       return null
     }
     val stack = ItemStack.of(material, this.amount)
@@ -41,14 +41,14 @@ class Item(
     val registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT)
     this.enchantments?.forEach {
       val enchantment = registry.get(NamespacedKey.minecraft(it.key)) ?: run {
-        MessageSender.Companion.sendMessage(Bukkit.getConsoleSender(),
+        MessageSender.sendMessage(Bukkit.getConsoleSender(),
           "Invalid enchantment key: ${it.key}")
         return null
       }
       meta.addEnchant(enchantment, it.value, true)
     }
     stack.itemMeta = meta
-    MessageSender.Companion.sendMessage(Bukkit.getConsoleSender(), "Loaded stack $stack")
+    MessageSender.sendMessage(Bukkit.getConsoleSender(), "Loaded stack $stack")
     return stack
   }
 }
