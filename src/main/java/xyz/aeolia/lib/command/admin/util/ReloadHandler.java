@@ -3,11 +3,25 @@ package xyz.aeolia.lib.command.admin.util;
 import cymru.asheiou.configmanager.ConfigManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 import xyz.aeolia.lib.manager.KitManager;
 import xyz.aeolia.lib.sender.MessageSender;
 
-public class ReloadHandler {
-  public static boolean doUtilReload(CommandSender sender, JavaPlugin plugin) {
+import java.util.List;
+
+public class ReloadHandler extends SubCommandHandler {
+  private final JavaPlugin plugin;
+  public ReloadHandler(JavaPlugin plugin) {
+    this.plugin = plugin;
+  }
+
+  @Override
+  public @NotNull List<String> getAlias() {
+    return List.of("reload");
+  }
+
+  @Override
+  public boolean handle(@NotNull CommandSender sender, String @NotNull [] args) {
     MessageSender.sendMessage(sender, "Starting config reload...", true);
     Integer[] response = new ConfigManager(plugin, true).loadConfig();
     String compose = "Reload complete! ";
