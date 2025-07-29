@@ -31,7 +31,7 @@ import xyz.aeolia.lib.sender.WebhookSender
 import java.time.Duration
 import java.time.Instant
 
-class AeoliaLib : JavaPlugin() {
+open class AeoliaLib : JavaPlugin() {
   override fun onEnable() {
     logger.info("Started load...")
     val startTime = Instant.now()
