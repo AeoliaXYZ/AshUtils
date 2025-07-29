@@ -52,6 +52,12 @@ dependencies {
         exclude(group = "org.bukkit", module = "bukkit")
     }
     compileOnly(libs.net.luckperms.api)
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
+    testImplementation("org.slf4j:slf4j-simple:2.0.7")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:2.2.0")
+    testImplementation("org.mockito:mockito-core:4.5.1")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
+    testImplementation("org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.72.5")
 }
 
 group = "xyz.aeolia"
@@ -109,4 +115,11 @@ tasks.shadowJar {
     relocate("hk.siggi.bukkit.plugcubebuildersin", "xyz.aeolia.lib.shade.pcbi")
     relocate("org.apache.commons.lang3", "xyz.aeolia.lib.shade.lang")
     relocate("org.apache.commons.text", "xyz.aeolia.lib.shade.text")
+}
+
+tasks.test {
+    useJUnitPlatform()
+    filter {
+        includeTestsMatching("*Test")
+    }
 }
