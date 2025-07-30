@@ -1,4 +1,4 @@
-package xyz.aeolia.lib.enumerable
+package xyz.aeolia.lib.data
 
 enum class EnchantResult {
   SUCCESS,

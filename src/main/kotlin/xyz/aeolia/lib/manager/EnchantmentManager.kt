@@ -13,7 +13,7 @@ import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
-import xyz.aeolia.lib.enumerable.EnchantResult
+import xyz.aeolia.lib.data.EnchantResult
 import xyz.aeolia.lib.sender.MessageSender
 import java.io.File
 
