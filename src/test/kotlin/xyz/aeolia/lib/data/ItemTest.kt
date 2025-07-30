@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test
 import org.mockbukkit.mockbukkit.MockBukkit
 import org.mockbukkit.mockbukkit.ServerMock
 import org.mockbukkit.mockbukkit.plugin.PluginMock
-import xyz.aeolia.lib.AeoliaLib
 import xyz.aeolia.lib.sender.MessageSender
 
 class ItemTest {
