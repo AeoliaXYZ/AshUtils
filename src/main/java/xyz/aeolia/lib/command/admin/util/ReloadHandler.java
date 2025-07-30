@@ -4,6 +4,7 @@ import cymru.asheiou.configmanager.ConfigManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import xyz.aeolia.lib.manager.EnchantmentManager;
 import xyz.aeolia.lib.manager.KitManager;
 import xyz.aeolia.lib.sender.MessageSender;
 
@@ -34,6 +35,8 @@ public class ReloadHandler extends SubCommandHandler {
     MessageSender.sendMessage(sender, compose, true);
     MessageSender.sendMessage(sender, "Starting kits reload...", true);
     KitManager.init(plugin, sender);
+    MessageSender.sendMessage(sender, "Starting enchants reload...", true);
+    EnchantmentManager.INSTANCE.reloadEnchantments();
     return true;
   }
 }
