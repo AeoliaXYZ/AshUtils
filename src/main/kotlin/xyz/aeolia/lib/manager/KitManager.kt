@@ -16,9 +16,9 @@ import java.io.File
 
 object KitManager {
   val kits = mutableMapOf<String, Kit>()
-  lateinit var plugin: JavaPlugin
-  lateinit var scope: CoroutineScope
-  var loaded = false
+  private lateinit var plugin: JavaPlugin
+  private lateinit var scope: CoroutineScope
+  private var loaded = false
 
   @JvmStatic
   fun init(plugin: JavaPlugin, recipient: Audience? = null) {
