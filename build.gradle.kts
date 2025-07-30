@@ -112,7 +112,6 @@ tasks.shadowJar {
     relocate("kotlin", "xyz.aeolia.lib.shade.kotlin")
     relocate("kotlinx", "xyz.aeolia.lib.shade.kotlinx")
     relocate("cymru.asheiou.configmanager", "xyz.aeolia.lib.shade.configmanager")
-    relocate("hk.siggi.bukkit.plugcubebuildersin", "xyz.aeolia.lib.shade.pcbi")
     relocate("org.apache.commons.lang3", "xyz.aeolia.lib.shade.lang")
     relocate("org.apache.commons.text", "xyz.aeolia.lib.shade.text")
 }
