@@ -31,11 +31,9 @@ class FakeTabExecutor(private val plugin: JavaPlugin) : TabExecutor {
       "join", "j" -> plugin.config.getString("join-message")
       else -> {
         MessageSender.sendMessage(sender, COMMAND_USAGE, true)
-        return false
+        null
       }
-    }
-    checkNotNull(message)
-
+    } ?: return false
     message = when (args.size) {
       1 -> {
         message.replace("{USERNAME}", sender.name)
