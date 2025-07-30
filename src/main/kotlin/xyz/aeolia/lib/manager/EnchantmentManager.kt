@@ -19,6 +19,7 @@ import java.io.File
 
 object EnchantmentManager {
   lateinit var enchantments: MutableMap<Enchantment, List<Int>>
+  lateinit var enchantmentStrings: MutableMap<String, List<Int>>
   private lateinit var plugin: JavaPlugin
   private lateinit var scope: CoroutineScope
   private var loaded = false
@@ -42,8 +43,9 @@ object EnchantmentManager {
 
   private fun reloadEnchantmentsCoro() {
     val json = File(plugin.dataFolder, "enchantments.json").readText()
-    val type = object : TypeToken<Map<String, List<Int>>>() {}.type
-    gson.fromJson<Map<String, List<Int>>>(json, type).forEach { enchantmentString, list ->
+    val type = object : TypeToken<MutableMap<String, List<Int>>>() {}.type
+    enchantmentStrings = gson.fromJson(json, type)
+    enchantmentStrings.forEach { enchantmentString, list ->
       if (list.isEmpty()) {
         plugin.logger.severe("Missing enchantment levels for $enchantmentString!")
         return@forEach
@@ -77,6 +79,7 @@ object EnchantmentManager {
   fun addSafeEnchant(enchantment: Enchantment, level: Int, item: ItemStack): EnchantResult {
     if (conflicts(enchantment, item)) return EnchantResult.CONFLICTING_ENCHANTMENTS
     if (enchantment.maxLevel < level) return EnchantResult.INVALID_LEVEL
+    if (!enchantment.canEnchantItem(item)) return EnchantResult.INCOMPATIBLE_ENCHANTMENT
     item.addEnchantment(enchantment, level)
     return EnchantResult.SUCCESS
   }

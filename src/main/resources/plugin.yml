@@ -1,4 +1,3 @@
----
 name: AeoliaLib
 main: xyz.aeolia.lib.AeoliaLib
 version: "%%VERSION"
@@ -33,6 +32,11 @@ commands:
     usage: "/<command>"
     permission: lib.code
     permission-message: You don't have lib.code.
+  enchant:
+    description: Enchant an item
+    usage: "/<command> <enchantment> <level>"
+    permission: lib.enchant
+    permission-message: You don't have lib.enchant.
   fake:
     description: Fake join or quit
     usage: "/<command> <join/quit> [user]"
@@ -106,6 +110,9 @@ permissions:
     default: op
   lib.code:
     description: Allows /code
+    default: true
+  lib.enchant:
+    description: Allows /enchant
     default: true
   lib.fake:
     description: Allows /fake
