@@ -16,7 +16,7 @@ public class EconManager {
       return false;
     }
     econ = rsp.getProvider();
-    return econ != null;
+    return true;
   }
 
   public static Economy getEcon() {
