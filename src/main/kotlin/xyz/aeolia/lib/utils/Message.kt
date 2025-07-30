@@ -4,6 +4,7 @@ object Message {
   object Econ {
     const val SOLD = "You have sold <aqua>%d<reset> %s for <aqua>%s%d<reset>."
     const val TOO_MANY = "You don't have that many to sell!"
+    const val INSUFFICIENT_FUNDS = "You don't have enough money!"
   }
   object Error {
     const val CONFIG = "The config is not correctly configured - it is missing field %s."

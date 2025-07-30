@@ -21,6 +21,7 @@ import xyz.aeolia.lib.listener.PVPListener
 import xyz.aeolia.lib.listener.SuffixListener
 import xyz.aeolia.lib.listener.VaultListener
 import xyz.aeolia.lib.manager.EconManager
+import xyz.aeolia.lib.manager.EnchantmentManager
 import xyz.aeolia.lib.manager.KitManager
 import xyz.aeolia.lib.manager.PermissionManager
 import xyz.aeolia.lib.manager.StatusManager
@@ -36,12 +37,14 @@ open class AeoliaLib : JavaPlugin() {
     logger.info("Started load...")
     val startTime = Instant.now()
     val pm = server.pluginManager
+    val nece = NotEnabledCommandExecutor()
     // Dependency check
     if (pm.getPlugin("Essentials") == null) {
       logger.info("No Essentials found!")
       pm.disablePlugin(this)
     }
     // Inits
+    EnchantmentManager.init(this)
     KitManager.init(this)
     MessageSender.init(this)
     UserManager.init(this)
@@ -75,27 +78,29 @@ open class AeoliaLib : JavaPlugin() {
       commands["vanishonlogin"] = VanishOnLoginTabExecutor(this)
     } else {
       logger.info("LuckPerms not found - not enabling permission features.")
-      commands["vanishonlogin"] = NotEnabledCommandExecutor()
+      commands["vanishonlogin"] = nece
     }
     //// SmartInvs
     if (pm.getPlugin("SmartInvs") != null && pm.getPlugin("LuckPerms") != null) {
       commands["suffix"] = SuffixCommandExecutor(this)
       pm.registerEvents(SuffixListener(this), this)
     } else {
-      commands["suffix"] = NotEnabledCommandExecutor()
+      commands["suffix"] = nece
       logger.info("SmartInvs not found - not enabling /suffix.")
     }
     //// Vault
     if (EconManager.setupEconomy(this)) {
       pm.registerEvents(VaultListener(this), this)
+      commands["enchant"] = EnchantTabExecutor(this)
       commands["headsell"] = HeadSellCommandExecutor(this)
       commands["xpsell"] = XpCommandExecutor(this)
       commands["xpbuy"] = XpCommandExecutor(this)
     } else {
       logger.info("Economy not found. Not enabling econ commands.")
-      commands["headsell"] = NotEnabledCommandExecutor()
-      commands["xpsell"] = NotEnabledCommandExecutor()
-      commands["xpbuy"] = NotEnabledCommandExecutor()
+      commands["enchant"] = nece
+      commands["headsell"] = nece
+      commands["xpsell"] = nece
+      commands["xpbuy"] = nece
     }
     // Commands
     for (command in commands) {
