@@ -8,6 +8,7 @@ import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.inventory.ItemStack
+import xyz.aeolia.lib.manager.EnchantmentManager
 import xyz.aeolia.lib.sender.MessageSender
 
 @Serializable
@@ -32,19 +33,14 @@ class Item(
 
     this.lore.let {
       val lore = mutableListOf<Component>()
-      this.lore!!.forEach {
+      this.lore?.forEach {
         lore.add(mm.deserialize(it))
       }
       meta.lore(lore)
     }
 
-    val registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT)
     this.enchantments?.forEach {
-      val enchantment = registry.get(NamespacedKey.minecraft(it.key)) ?: run {
-        MessageSender.sendMessage(Bukkit.getConsoleSender(),
-          "Invalid enchantment key: ${it.key}")
-        return null
-      }
+      val enchantment = EnchantmentManager.nameToEnchant(it.key) ?: return null
       meta.addEnchant(enchantment, it.value, true)
     }
     stack.itemMeta = meta
