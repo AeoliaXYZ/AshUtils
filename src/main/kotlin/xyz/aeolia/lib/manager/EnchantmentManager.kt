@@ -18,7 +18,7 @@ import xyz.aeolia.lib.sender.MessageSender
 import java.io.File
 
 object EnchantmentManager {
-  lateinit var enchantments: MutableMap<Enchantment, List<Int>>
+  var enchantments: MutableMap<Enchantment, List<Int>> = mutableMapOf()
   lateinit var enchantmentStrings: MutableMap<String, List<Int>>
   private lateinit var plugin: JavaPlugin
   private lateinit var scope: CoroutineScope
@@ -42,7 +42,11 @@ object EnchantmentManager {
   }
 
   private fun reloadEnchantmentsCoro() {
-    val json = File(plugin.dataFolder, "enchantments.json").readText()
+    val file = File(plugin.dataFolder, "enchantments.json")
+    if(!file.exists()) {
+      plugin.saveResource("enchantments.json", false)
+    }
+    val json = file.readText()
     val type = object : TypeToken<MutableMap<String, List<Int>>>() {}.type
     enchantmentStrings = gson.fromJson(json, type)
     enchantmentStrings.forEach { enchantmentString, list ->
