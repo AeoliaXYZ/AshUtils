@@ -29,3 +29,6 @@ pvp:
   spawn-locations: []
 prune-time: 2000
 chat-format: "<{DISPLAYNAME}<reset>>"
+repair:
+  charge-per-item: true
+  cost: 500

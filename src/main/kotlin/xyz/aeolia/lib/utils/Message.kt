@@ -14,6 +14,8 @@ object Message {
   }
   object Generic {
     const val COMMAND_USAGE = "Unrecognised usage. Usage:"
+    const val INVALID_ITEM = "The item you're holding is invalid for this command."
+    const val NOT_HOLDING = "You're not holding anything!"
     const val NOT_PLAYER = "You must be a player to execute this command."
     const val NOT_PLAYER_ARGS = "You must be a player to execute this command without arguments."
     const val TOO_MANY_ARGS = "Too many arguments! Usage:"

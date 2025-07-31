@@ -13,8 +13,7 @@ import xyz.aeolia.lib.sender.MessageSender;
 
 import static xyz.aeolia.lib.utils.Message.Econ.SOLD;
 import static xyz.aeolia.lib.utils.Message.Econ.TOO_MANY;
-import static xyz.aeolia.lib.utils.Message.Generic.COMMAND_USAGE;
-import static xyz.aeolia.lib.utils.Message.Generic.NOT_PLAYER;
+import static xyz.aeolia.lib.utils.Message.Generic.*;
 
 public class HeadSellCommandExecutor implements CommandExecutor {
   JavaPlugin plugin;
@@ -59,11 +58,11 @@ public class HeadSellCommandExecutor implements CommandExecutor {
         return true;
 
       }
-      MessageSender.sendMessage(player, "You're not holding a head!", false);
+      MessageSender.sendMessage(player, INVALID_ITEM, true);
       return true;
 
     }
-    MessageSender.sendMessage(sender, NOT_PLAYER, false);
+    MessageSender.sendMessage(sender, NOT_PLAYER, true);
     return true;
   }
 
