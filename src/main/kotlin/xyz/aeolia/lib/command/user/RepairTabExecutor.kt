@@ -78,6 +78,6 @@ class RepairTabExecutor(val plugin: JavaPlugin) : TabExecutor {
       }
     }
     return true.also { MessageSender.sendMessage(sender, "$itemsRepaired items repaired for " +
-            "${plugin.config.getString("currency-symbol","A")}${repairerManager.costToRepair}.") }
+            "${plugin.config.getString("currency-symbol","A")}${"%.2f".format(repairerManager.costToRepair)}.") }
   }
 }
