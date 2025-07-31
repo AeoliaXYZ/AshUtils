@@ -14,7 +14,7 @@ class AFKTask(val event: AfkStatusChangeEvent, val plugin: JavaPlugin) : BukkitR
     val player = event.getAffected().base
     if (getUser(player).vanish) return
     if (!player.isOnline) return
-    val clean = event.affected.displayName.replace("$(.)".toRegex(), "")
+    val clean = event.affected.displayName.replace("§.".toRegex(), "")
     val uri: URI
     try {
       uri = URI(Objects.requireNonNull<String>(plugin.config.getString("discord.afk-webhook")))
