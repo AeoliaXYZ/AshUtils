@@ -66,7 +66,7 @@ class RepairTabExecutor(val plugin: JavaPlugin) : TabExecutor {
       }
     }
 
-    val repairerManager = RepairerManager(plugin, sender, itemsToRepair).init()
+    val repairerManager = RepairerManager(plugin, sender, itemsToRepair)
     if (repairerManager.costToRepair > econ.getBalance(sender))
       return true.also { MessageSender.sendMessage(sender, Message.Econ.INSUFFICIENT_FUNDS) }
     if (repairerManager.costToRepair == 0.0)
