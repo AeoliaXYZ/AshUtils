@@ -53,6 +53,17 @@ class EnchantTabExecutor(val plugin: JavaPlugin) : TabExecutor {
     val enchant = EnchantmentManager.nameToEnchant(args[0]) ?: run {
       return true.also { MessageSender.sendMessage(sender, "This enchantment was not found!") }
     }
+
+    val currencySymbol = plugin.config.getString("currency-symbol")
+
+    if(args[1] == "price") {
+      var i = 1
+      var message = "<aqua>Prices for ${args[0]}:</aqua>\n"
+      EnchantmentManager.enchantments[enchant]!!.forEach {
+        message += "$i: $currencySymbol$it\n"
+      }
+      return true.also { MessageSender.sendMessage(sender, message, false) }
+    }
     val level: Int
     try {
       level = Integer.parseInt(args[1])
@@ -63,7 +74,7 @@ class EnchantTabExecutor(val plugin: JavaPlugin) : TabExecutor {
     if (item.type == Material.AIR) return true.also { MessageSender.sendMessage(sender, "You're not holding anything!") }
     val result = EnchantmentManager.addAndDebit(enchant, level, item, sender)
     val message = when (result.first) {
-      EnchantResult.SUCCESS -> "Enchantment added successfully! You have been charged ${plugin.config.getString("currency-symbol")}${result.second}."
+      EnchantResult.SUCCESS -> "Enchantment added successfully! You have been charged $currencySymbol${result.second}."
       EnchantResult.INVALID_LEVEL -> "The level you provided is out of bounds for this enchantment."
       EnchantResult.CONFLICTING_ENCHANTMENTS -> "This enchantment conflicts with an existing enchantment on this tool."
       EnchantResult.INCOMPATIBLE_ENCHANTMENT -> "This enchantment is not compatible with this item."
