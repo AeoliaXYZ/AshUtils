@@ -58,9 +58,9 @@ class EnchantTabExecutor(val plugin: JavaPlugin) : TabExecutor {
 
     if(args[1] == "price") {
       var i = 1
-      var message = "<aqua>Prices for ${args[0]}:</aqua>\n"
+      var message = "<aqua>Prices for ${args[0]}:</aqua>"
       EnchantmentManager.enchantments[enchant]!!.forEach {
-        message += "$i: $currencySymbol$it\n"
+        message += "\n$i: $currencySymbol$it"
         i++
       }
       return true.also { MessageSender.sendMessage(sender, message, false) }
