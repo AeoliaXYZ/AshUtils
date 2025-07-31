@@ -5,16 +5,15 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
 import xyz.aeolia.lib.data.Repairer
 
-class RepairerManager(val plugin: JavaPlugin, val player: Player, val items: List<ItemStack>) {
+class RepairerManager(
+  val plugin: JavaPlugin,
+  val player: Player,
+  val items: List<ItemStack>,
+  val chargePerItem : Boolean =  plugin.config.getBoolean("repair.charge-per-item", true),
+  val repairCost : Double = plugin.config.getDouble("repair.cost", 0.0)) {
   val repairers: MutableList<Repairer> = mutableListOf()
-  var chargePerItem: Boolean = true
-    private set
-  var repairCost: Double = (-1).toDouble()
-    private set
 
   fun init() : RepairerManager {
-    chargePerItem = plugin.config.getBoolean("repair.charge-per-item", true)
-    repairCost = plugin.config.getDouble("repair.cost")
     for (item in items) {
       repairers.add(Repairer(item, player, this))
     }
