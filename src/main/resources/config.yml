@@ -30,5 +30,5 @@ pvp:
 prune-time: 2000
 chat-format: "<{DISPLAYNAME}<reset>>"
 repair:
-  charge-per-item: true
-  cost: 500
+  charge-per-item: false
+  cost: 0.5

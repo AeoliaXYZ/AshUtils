@@ -64,6 +64,8 @@ commands:
     usage: "/<command> [all]"
     permission: lib.repair
     permission-message: You don't have lib.repair.
+    aliases:
+    - fix
   report:
     description: Create a report to our staff
     usage: "/<command> <report message>"
