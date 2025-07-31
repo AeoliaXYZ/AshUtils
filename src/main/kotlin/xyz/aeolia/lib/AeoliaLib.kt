@@ -37,7 +37,7 @@ open class AeoliaLib : JavaPlugin() {
     logger.info("Started load...")
     val startTime = Instant.now()
     val pm = server.pluginManager
-    val nece = NotEnabledCommandExecutor()
+    val notEnabled = NotEnabledCommandExecutor()
     // Dependency check
     if (pm.getPlugin("Essentials") == null) {
       logger.info("No Essentials found!")
@@ -78,29 +78,31 @@ open class AeoliaLib : JavaPlugin() {
       commands["vanishonlogin"] = VanishOnLoginTabExecutor(this)
     } else {
       logger.info("LuckPerms not found - not enabling permission features.")
-      commands["vanishonlogin"] = nece
+      commands["vanishonlogin"] = notEnabled
     }
     //// SmartInvs
     if (pm.getPlugin("SmartInvs") != null && pm.getPlugin("LuckPerms") != null) {
       commands["suffix"] = SuffixCommandExecutor(this)
       pm.registerEvents(SuffixListener(this), this)
     } else {
-      commands["suffix"] = nece
+      commands["suffix"] = notEnabled
       logger.info("SmartInvs not found - not enabling /suffix.")
     }
     //// Vault
     if (EconManager.setupEconomy(this)) {
       pm.registerEvents(VaultListener(this), this)
+      commands["repair"] = RepairTabExecutor(this)
       commands["enchant"] = EnchantTabExecutor(this)
       commands["headsell"] = HeadSellCommandExecutor(this)
       commands["xpsell"] = XpCommandExecutor(this)
       commands["xpbuy"] = XpCommandExecutor(this)
     } else {
       logger.info("Economy not found. Not enabling econ commands.")
-      commands["enchant"] = nece
-      commands["headsell"] = nece
-      commands["xpsell"] = nece
-      commands["xpbuy"] = nece
+      commands["enchant"] = notEnabled
+      commands["repair"] = notEnabled
+      commands["headsell"] = notEnabled
+      commands["xpsell"] = notEnabled
+      commands["xpbuy"] = notEnabled
     }
     // Commands
     commands.forEach {
