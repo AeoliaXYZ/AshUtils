@@ -72,8 +72,8 @@ publishing {
     repositories {
         maven {
             name = "asheiou"
-            if (project.version.toString().contains("-dev")) url = uri("https://repo.asheiou.cymru/snapshots")
-            else url = uri("https://repo.asheiou.cymru/releases")
+            url = if (project.version.toString().contains("-dev")) uri("https://repo.asheiou.cymru/snapshots")
+            else uri("https://repo.asheiou.cymru/releases")
             credentials {
                 username = providers.gradleProperty("asheiouUser").orElse("").get()
                 password = providers.gradleProperty("asheiouPassword").orElse("").get()
