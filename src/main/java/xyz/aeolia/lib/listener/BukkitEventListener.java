@@ -39,7 +39,7 @@ public class BukkitEventListener implements Listener {
   public void onPlayerQuit(PlayerQuitEvent event) {
     UserManager.getUser(event.getPlayer()).setOnline(false);
     new ROEQuitTask(this.plugin).runTaskLater(this.plugin, 3);
-    new UserPruneTask(event.getPlayer()).runTaskLater(this.plugin, plugin.getConfig().getLong("prune-time"));
+    new UserPruneTask(event.getPlayer(), plugin).runTaskLater(this.plugin, plugin.getConfig().getLong("prune-time"));
 
   }
 

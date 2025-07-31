@@ -11,6 +11,7 @@ object Message {
     const val GENERIC = "An internal error occurred. Please contact an administrator."
     const val REQUEST_FAIL = "The HTTP request failed with code %s. Response: %s."
     const val REQUEST_FAIL_GENERIC = "The HTTP request failed. Check console for more details."
+    const val TELEPORT_FAIL = "Teleportation failed. Please contact an administrator."
   }
   object Generic {
     const val COMMAND_USAGE = "Unrecognised usage. Usage:"
