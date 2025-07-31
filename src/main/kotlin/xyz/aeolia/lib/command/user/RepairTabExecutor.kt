@@ -53,6 +53,7 @@ class RepairTabExecutor(val plugin: JavaPlugin) : TabExecutor {
 
       1 -> {
         sender.inventory.forEach {
+          if (it == null) return@forEach
           if (it.itemMeta is Damageable)
             itemsToRepair.add(it)
         }
