@@ -10,15 +10,8 @@ softdepend:
 depend:
 - Essentials
 website: https://asheiou.cymru
-description: '>
-              The Aeolia bespoke everything-plugin!'
+description: "> The Aeolia bespoke everything-plugin!"
 commands:
-  util:
-    aliases: util
-    description: Admin command.
-    usage: "/<command>"
-    permission: lib.admin
-    permission-message: You don't have lib.admin.
   broadcast:
     description: Broadcast a message to the server and the Discord.
     usage: "/<command> <message>"
@@ -66,6 +59,11 @@ commands:
     usage: "/<command>"
     permission: lib.pvp
     permission-message: You don't have lib.pvp.
+  repair:
+    description: Repair items
+    usage: "/<command> [all]"
+    permission: lib.repair
+    permission-message: You don't have lib.repair.
   report:
     description: Create a report to our staff
     usage: "/<command> <report message>"
@@ -76,6 +74,12 @@ commands:
     usage: "/<command>"
     permission: lib.suffix
     permission-message: You don't have lib.suffix.
+  util:
+    aliases: util
+    description: Admin command.
+    usage: "/<command>"
+    permission: lib.admin
+    permission-message: You don't have lib.admin.
   vanishonlogin:
     aliases: vol
     description: Vanish on login
@@ -94,7 +98,6 @@ commands:
     usage: "/<command> <amount/all>"
     permission: lib.xpsell
     permission-message: You don't have lib.xpsell.
-
 permissions:
   lib.admin:
     description: Allows /util
@@ -131,6 +134,9 @@ permissions:
     default: op
   lib.pvp:
     description: Allows /pvp
+    default: true
+  lib.repair:
+    description: Allows /repair
     default: true
   lib.report:
     description: Allows /report
