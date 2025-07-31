@@ -105,8 +105,8 @@ open class AeoliaLib : JavaPlugin() {
       commands["xpbuy"] = notEnabled
     }
     // Commands
-    commands.forEach {
-      setExecutor(it.key, it.value)
+    for (command in commands) {
+      setExecutor(command.key, command.value)
     }
     logger.info("Commands registered!")
     // Toggle
