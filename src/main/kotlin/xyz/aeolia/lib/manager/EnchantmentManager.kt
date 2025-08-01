@@ -7,6 +7,7 @@ import io.papermc.paper.registry.RegistryKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import net.kyori.adventure.audience.Audience
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
 import org.bukkit.enchantments.Enchantment
@@ -32,7 +33,7 @@ object EnchantmentManager {
     reloadEnchantments()
   }
 
-  fun reloadEnchantments() {
+  fun reloadEnchantments(recipient: Audience? = null) {
     loaded = false
     scope = CoroutineScope(Dispatchers.Default)
     scope.launch {
@@ -41,7 +42,7 @@ object EnchantmentManager {
     }
   }
 
-  private fun reloadEnchantmentsCoro() {
+  private fun reloadEnchantmentsCoro(recipient: Audience? = null) {
     val file = File(plugin.dataFolder, "enchantments.json")
     if(!file.exists()) {
       plugin.saveResource("enchantments.json", false)
@@ -59,6 +60,9 @@ object EnchantmentManager {
         return@forEach
       }
       enchantments.put(enchantment, list)
+    }
+    recipient?.let {
+      MessageSender.sendMessage(it, "Enchantments reloaded successfully!")
     }
   }
 
