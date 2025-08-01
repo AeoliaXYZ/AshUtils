@@ -22,23 +22,21 @@ class UtilTabExecutor(val lib: AeoliaLib) : TabExecutor {
     label: String,
     args: Array<out String>
   ): Boolean {
-    if (args.isEmpty()) {
-      sendMessage(sender, "AeoliaLib v" + lib.description.version + " enabled.", true)
-      return true
-    }
-    val subCommands: MutableList<SubCommandHandler> = ArrayList(this.subCommands)
-    subCommands.add(StatusToggleHandler(args[0]))
+    if (args.isEmpty()) return true.also { sendMessage(sender,
+        "AeoliaLib v" + lib.description.version + " enabled.", true) }
+
+    val subCommands: MutableList<SubCommandHandler> = mutableListOf<SubCommandHandler>(StatusToggleHandler(args[0]))
+      .also { it.addAll(this.subCommands) }
     val subCommandArgs = args.copyOfRange(1, args.size)
 
-    for (subCommand in subCommands) {
-      if (subCommand.alias.contains(args[0])) {
-        return subCommand.handle(sender, subCommandArgs)
+    subCommands.forEach {
+      if (it.alias.contains(args[0])) {
+        return it.handle(sender, subCommandArgs)
       }
     }
 
-    sendMessage(sender, COMMAND_USAGE, true)
-    sendMessage(sender, "/util reload/restartonempty/motd/clearchat/lockchat.", false)
-    return true
+    return true.also { sendMessage(sender,
+      "$COMMAND_USAGE\n/util reload/restartonempty/motd/clearchat/lockchat.", true) }
   }
 
   override fun onTabComplete(
@@ -51,25 +49,14 @@ class UtilTabExecutor(val lib: AeoliaLib) : TabExecutor {
     val commands: MutableList<String> = mutableListOf()
 
     if (args.size == 1) {
-      if (sender.hasPermission("lib.admin")) {
-        commands.add("motd")
-        commands.add("reload")
-        commands.add("restartonempty")
-        commands.add("lockchat")
-        commands.add("clearchat")
-      }
+      if (sender.hasPermission("lib.admin"))
+        commands.addAll(listOf("motd", "reload", "restartonempty", "lockchat", "clearchat"))
       StringUtil.copyPartialMatches<MutableList<String>>(args[0], commands, completions)
     } else if (args.size == 2) {
-      if (args[0] == "restartonempty" || args[0] == "lockchat") {
-        if (sender.hasPermission("lib.admin")) {
-          commands.add("true")
-          commands.add("false")
-          commands.add("status")
-        }
-      }
+      if (args[0] == "restartonempty" || args[0] == "lockchat") if (sender.hasPermission("lib.admin"))
+        commands.addAll(listOf("true", "false", "status"))
       StringUtil.copyPartialMatches<MutableList<String>>(args[1], commands, completions)
     }
-    completions.sort()
-    return completions
+    completions.sort().also { return completions }
   }
 }
