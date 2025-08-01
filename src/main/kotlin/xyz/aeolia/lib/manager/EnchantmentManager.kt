@@ -114,6 +114,7 @@ object EnchantmentManager {
     val enchantResult = addSafeEnchant(enchantment, level, item)
     if (enchantResult != EnchantResult.SUCCESS)
       return enchantResult to 0
+    econ.withdrawPlayer(player, price.toDouble())
     return enchantResult to price
   }
 }
