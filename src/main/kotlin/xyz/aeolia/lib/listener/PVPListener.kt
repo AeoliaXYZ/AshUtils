@@ -85,7 +85,7 @@ class PVPListener(val plugin: JavaPlugin) : Listener {
 
     fun processBlockEvent(player: Player, cancelled: Boolean, plugin: JavaPlugin): User? {
       val world = player.location.world
-      if (world.name == plugin.config.getString("pvp.world")) {
+      if (world.name != plugin.config.getString("pvp.world")) {
         return null
       }
       if (cancelled) return null
