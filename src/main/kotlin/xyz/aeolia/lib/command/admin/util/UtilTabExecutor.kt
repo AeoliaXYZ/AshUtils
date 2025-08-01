@@ -26,7 +26,7 @@ class UtilTabExecutor(val lib: AeoliaLib) : TabExecutor {
         "AeoliaLib v" + lib.description.version + " enabled.", true) }
 
     val subCommands: MutableList<SubCommandHandler> = mutableListOf<SubCommandHandler>(StatusToggleHandler(args[0]))
-      .also { it.addAll(this.subCommands) }
+      .apply { addAll(subCommands) }
     val subCommandArgs = args.copyOfRange(1, args.size)
 
     subCommands.forEach {
