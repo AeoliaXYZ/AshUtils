@@ -23,7 +23,7 @@ class ReloadHandler(private val lib: AeoliaLib) : SubCommandHandler() {
     sendMessage(sender, "Starting kits reload...", true)
     KitManager.init(lib, sender)
     sendMessage(sender, "Starting enchants reload...", true)
-    EnchantmentManager.reloadEnchantments()
+    EnchantmentManager.reloadEnchantments(sender)
     return true
   }
 }
