@@ -76,11 +76,11 @@ class EnchantTabExecutor(val plugin: JavaPlugin) : TabExecutor {
     val result = EnchantmentManager.addAndDebit(enchant, level, item, sender)
     val message = when (result.first) {
       EnchantResult.SUCCESS -> "Enchantment added successfully! You have been charged $currencySymbol${result.second}."
-      EnchantResult.INVALID_LEVEL -> "The level you provided is out of bounds for this enchantment."
-      EnchantResult.CONFLICTING_ENCHANTMENTS -> "This enchantment conflicts with an existing enchantment on this tool."
-      EnchantResult.INCOMPATIBLE_ENCHANTMENT -> "This enchantment is not compatible with this item."
-      EnchantResult.INVALID_ENCHANTMENT -> "This enchantment was not found!"
-      EnchantResult.INSUFFICIENT_FUNDS -> "You don't have enough money to purchase this enchantment."
+      EnchantResult.INVALID_LEVEL -> "The level you provided is out of bounds for that enchantment."
+      EnchantResult.CONFLICTING_ENCHANTMENTS -> "That enchantment conflicts with an existing enchantment on this tool."
+      EnchantResult.INCOMPATIBLE_ENCHANTMENT -> "That enchantment is not compatible with this item."
+      EnchantResult.INVALID_ENCHANTMENT -> "That enchantment was not found!"
+      EnchantResult.INSUFFICIENT_FUNDS -> "You don't have enough money to purchase that enchantment."
     }
     return true.also { MessageSender.sendMessage(sender, message) }
   }
