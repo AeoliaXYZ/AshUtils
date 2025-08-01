@@ -20,6 +20,7 @@ class RepairerManager(
 
   val costToRepair by lazy {
     var runningCost = 0.0
-    repairers.forEach { runningCost += it.costToRepair }.also { runningCost }
+    repairers.forEach { runningCost += it.costToRepair }
+    runningCost
   }
 }
