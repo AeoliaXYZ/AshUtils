@@ -6,6 +6,7 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
+import xyz.aeolia.lib.AeoliaLib;
 import xyz.aeolia.lib.sender.MessageSender;
 
 import java.util.ArrayList;
@@ -19,13 +20,12 @@ public class UtilTabExecutor implements TabExecutor {
   JavaPlugin plugin;
   final List<SubCommandHandler> subCommands;
 
-  public UtilTabExecutor(JavaPlugin plugin) {
-    this.plugin = plugin;
+  public UtilTabExecutor(AeoliaLib lib) {
+    this.plugin = lib;
     subCommands = List.of(
-            new ReloadHandler(plugin),
+            new ReloadHandler(lib),
             ClearChatHandler.INSTANCE,
             MotdHandler.INSTANCE
-
     );
   }
 
