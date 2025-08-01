@@ -38,9 +38,9 @@ open class PVPMenu(open val plugin: JavaPlugin) : InventoryProvider {
       if (condition) contents.add(ClickableItem.of(displayItem) { e ->
         e.isCancelled = true
         PVPListener.clearBlocks(UserManager.getUser(player))
+        PVPListener.tpPlayerToArena(player, plugin)
         KitManager.givePlayerKit(player, kit.value)
         MessageSender.sendMessage(player, "Equipped kit ${kit.value.displayName}!")
-        PVPListener.tpPlayerToArena(player, plugin)
       })
     }
   }
@@ -51,6 +51,7 @@ open class PVPMenu(open val plugin: JavaPlugin) : InventoryProvider {
     folder.listFiles().forEach { file ->
       if (file.isFile) if (file.nameWithoutExtension == "__global__") fileCount -= 1
     }
-    return ceil(fileCount / 9.toDouble()).toInt()
+    val ideal = ceil(fileCount / 9.0).toInt()
+    return if (ideal == 0) 1 else ideal
   }
 }
