@@ -85,9 +85,7 @@ class PVPListener(val plugin: JavaPlugin) : Listener {
 
     fun processBlockEvent(player: Player, cancelled: Boolean, plugin: JavaPlugin): User? {
       val world = player.location.world
-      if (world.name != plugin.config.getString("pvp.world")) {
-        return null
-      }
+      if (world.name != plugin.config.getString("pvp.world")) return null
       if (cancelled) return null
       return UserManager.getUser(player)
     }
@@ -101,7 +99,7 @@ class PVPListener(val plugin: JavaPlugin) : Listener {
         }
 
         if (spawnLocations.isEmpty()) {
-          plugin.logger.warning("PVP spawn labels are not configured!")
+          plugin.logger.warning("PVP spawn locations are not configured!")
           return@run null
         }
 
