@@ -33,6 +33,8 @@ import java.time.Duration
 import java.time.Instant
 
 open class AeoliaLib : JavaPlugin() {
+  val configManager = ConfigManager(this, true)
+
   override fun onEnable() {
     logger.info("Started load...")
     val startTime = Instant.now()
@@ -58,7 +60,7 @@ open class AeoliaLib : JavaPlugin() {
     pm.registerEvents(EssEventListener(this), this)
     pm.registerEvents(PVPListener(this), this)
     // Config
-    ConfigManager(this, true).loadConfig()
+    configManager.loadConfig()
     config.options().copyDefaults(true)
     saveConfig()
     // Commands

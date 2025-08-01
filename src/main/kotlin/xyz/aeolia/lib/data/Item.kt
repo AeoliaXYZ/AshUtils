@@ -1,12 +1,9 @@
 package xyz.aeolia.lib.data
 
-import io.papermc.paper.registry.RegistryAccess
-import io.papermc.paper.registry.RegistryKey
 import kotlinx.serialization.Serializable
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.Material
-import org.bukkit.NamespacedKey
 import org.bukkit.inventory.ItemStack
 import xyz.aeolia.lib.manager.EnchantmentManager
 import xyz.aeolia.lib.sender.MessageSender
@@ -21,20 +18,21 @@ class Item(
 ) {
   fun loadStack(): ItemStack? {
     val mm = MessageSender.miniMessage
-    val material = Material.getMaterial(this.material.uppercase())?: run {
+    val material = Material.getMaterial(this.material.uppercase()) ?: run {
       MessageSender.sendMessage(Bukkit.getConsoleSender(), "Material ${this.material.uppercase()} not found")
       return null
     }
     val stack = ItemStack.of(material, this.amount)
-    val meta = stack.itemMeta
-    if (this.displayName != null) {
-      meta.displayName(mm.deserialize(displayName))
+    val meta = stack.itemMeta!!
+
+    this.displayName?.let {
+      meta.displayName(mm.deserialize(it))
     }
 
-    this.lore.let {
+    this.lore?.let {
       val lore = mutableListOf<Component>()
-      this.lore?.forEach {
-        lore.add(mm.deserialize(it))
+      it.forEach { line ->
+        lore.add(mm.deserialize(line))
       }
       meta.lore(lore)
     }
@@ -43,6 +41,7 @@ class Item(
       val enchantment = EnchantmentManager.nameToEnchant(it.key) ?: return null
       meta.addEnchant(enchantment, it.value, true)
     }
+
     stack.itemMeta = meta
     MessageSender.sendMessage(Bukkit.getConsoleSender(), "Loaded stack $stack")
     return stack

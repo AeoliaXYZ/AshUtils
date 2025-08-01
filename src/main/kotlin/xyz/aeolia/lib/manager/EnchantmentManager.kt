@@ -6,7 +6,9 @@ import io.papermc.paper.registry.RegistryAccess
 import io.papermc.paper.registry.RegistryKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import net.kyori.adventure.audience.Audience
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
 import org.bukkit.enchantments.Enchantment
@@ -21,7 +23,7 @@ object EnchantmentManager {
   var enchantments: MutableMap<Enchantment, List<Int>> = mutableMapOf()
   lateinit var enchantmentStrings: MutableMap<String, List<Int>>
   private lateinit var plugin: JavaPlugin
-  private lateinit var scope: CoroutineScope
+  private var scope: CoroutineScope? = null
   private var loaded = false
 
   val registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT)
@@ -32,16 +34,17 @@ object EnchantmentManager {
     reloadEnchantments()
   }
 
-  fun reloadEnchantments() {
+  fun reloadEnchantments(recipient: Audience? = null) {
     loaded = false
+    cleanup()
     scope = CoroutineScope(Dispatchers.Default)
-    scope.launch {
-      reloadEnchantmentsCoro()
+    scope!!.launch {
+      reloadEnchantmentsCoro(recipient)
       loaded = true
     }
   }
 
-  private fun reloadEnchantmentsCoro() {
+  private fun reloadEnchantmentsCoro(recipient: Audience? = null) {
     val file = File(plugin.dataFolder, "enchantments.json")
     if(!file.exists()) {
       plugin.saveResource("enchantments.json", false)
@@ -60,6 +63,13 @@ object EnchantmentManager {
       }
       enchantments.put(enchantment, list)
     }
+    recipient?.let {
+      MessageSender.sendMessage(it, "Enchantments reloaded successfully!")
+    }
+  }
+
+  fun cleanup() {
+    scope?.cancel()
   }
 
   fun nameToEnchant(input: String): Enchantment? {
@@ -104,6 +114,7 @@ object EnchantmentManager {
     val enchantResult = addSafeEnchant(enchantment, level, item)
     if (enchantResult != EnchantResult.SUCCESS)
       return enchantResult to 0
+    econ.withdrawPlayer(player, price.toDouble())
     return enchantResult to price
   }
 }

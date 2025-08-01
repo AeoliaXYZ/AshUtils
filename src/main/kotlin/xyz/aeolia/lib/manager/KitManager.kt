@@ -17,15 +17,16 @@ import java.io.File
 object KitManager {
   val kits = mutableMapOf<String, Kit>()
   private lateinit var plugin: JavaPlugin
-  private lateinit var scope: CoroutineScope
+  private var scope: CoroutineScope? = null
   private var loaded = false
 
   @JvmStatic
   fun init(plugin: JavaPlugin, recipient: Audience? = null) {
     loaded = false
     this.plugin = plugin
+    cleanup()
     scope = CoroutineScope(Dispatchers.Default)
-    scope.launch {
+    scope!!.launch {
       initCoroutine(recipient)
       loaded = true
     }
@@ -59,10 +60,11 @@ object KitManager {
   }
 
   fun cleanup() {
-    scope.cancel()
+    scope?.cancel()
   }
 
   fun givePlayerKit(player: Player, kit: Kit): Boolean {
+    if (!loaded) return false
     val items = kit.items.toMutableList()
     if (kits.containsKey("__global__")) {
       items.addAll(kits["__global__"]!!.items)

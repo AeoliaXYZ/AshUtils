@@ -17,13 +17,11 @@ class Repairer(val item: ItemStack, val player: Player, val rm: RepairerManager)
   }
 
   val damageTaken: Int by lazy {
-    val damageable = item.itemMeta as? Damageable ?: return@lazy 0
-    damageable.damage
+    (item.itemMeta as? Damageable ?: return@lazy 0).damage
   }
 
   fun repair() : Double {
-    if (item.itemMeta !is Damageable) return 0.0
-    item.itemMeta = (item.itemMeta as Damageable).apply { damage = 0 }
+    item.itemMeta = ((item.itemMeta as? Damageable) ?: return 0.0).apply { damage = 0 }
     econ?.withdrawPlayer(player, costToRepair)
     return costToRepair
   }
