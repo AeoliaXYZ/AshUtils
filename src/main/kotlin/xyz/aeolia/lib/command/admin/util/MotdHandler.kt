@@ -17,7 +17,7 @@ object MotdHandler : SubCommandHandler() {
       return true
     }
     motd = args.joinToString(" ")
-    MessageSender.sendMessage(sender, "Motd set to:")
+    MessageSender.sendMessage(sender, "MOTD set to:")
     val broadcastStatus = WebhookSender.broadcast(MessageSender.miniMessage.deserialize(motd!!))
     if (broadcastStatus) return true
     MessageSender.sendMessage(sender, REQUEST_FAIL_GENERIC)
