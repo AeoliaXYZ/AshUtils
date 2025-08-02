@@ -83,7 +83,10 @@ object UserMapManager {
       } catch (e: IOException) {
         throw CompletionException(e)
       }
-    }.thenRun { plugin.logger.info("Saved users.json with " + userMap.size + " values!") }
+    }.thenRun {
+      plugin.logger.info("Saved users.json with " + userMap.size + " values!")
+      modified = false
+    }
       .exceptionally(Function { t: Throwable ->
         plugin.logger.severe("Failed to save users.json! Dumping it to console. Reason: " + t.message)
         plugin.logger.severe("StackTrace: " + t.stackTrace.contentToString())
