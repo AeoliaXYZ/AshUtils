@@ -51,7 +51,7 @@ class EnchantTabExecutor(val plugin: JavaPlugin) : TabExecutor {
     if(sender !is Player) return true.also { MessageSender.sendMessage(sender, Message.Generic.NOT_PLAYER) }
     if(args.size != 2) return false.also { MessageSender.sendMessage(sender, Message.Generic.COMMAND_USAGE) }
     val enchant = EnchantmentManager.nameToEnchant(args[0]) ?: run {
-      return true.also { MessageSender.sendMessage(sender, "This enchantment was not found!") }
+      return true.also { MessageSender.sendMessage(sender, "That enchantment was not found!") }
     }
 
     val currencySymbol = plugin.config.getString("currency-symbol")
