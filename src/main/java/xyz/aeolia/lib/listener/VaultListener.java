@@ -13,6 +13,8 @@ import xyz.aeolia.lib.sender.MessageSender;
 import xyz.aeolia.lib.data.User;
 import xyz.aeolia.lib.manager.UserManager;
 
+import java.util.Objects;
+
 public class VaultListener implements Listener {
   private final JavaPlugin plugin;
 
@@ -38,7 +40,7 @@ public class VaultListener implements Listener {
       return;
     }
     long pvpPrize = config.getLong("pvp.kill-prize");
-    EconManager.getEcon().depositPlayer(killer, pvpPrize);
+    Objects.requireNonNull(EconManager.getEcon()).depositPlayer(killer, pvpPrize);
     victimuser.setLastPvpPayout(currentTimeSeconds);
 
     String messageEnd = " and claimed a prize of <aqua>"

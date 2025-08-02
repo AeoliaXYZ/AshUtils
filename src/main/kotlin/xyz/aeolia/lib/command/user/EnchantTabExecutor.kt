@@ -81,6 +81,7 @@ class EnchantTabExecutor(val plugin: JavaPlugin) : TabExecutor {
       EnchantResult.INCOMPATIBLE_ENCHANTMENT -> "That enchantment is not compatible with this item."
       EnchantResult.INVALID_ENCHANTMENT -> "That enchantment was not found!"
       EnchantResult.INSUFFICIENT_FUNDS -> "You don't have enough money to purchase that enchantment."
+      EnchantResult.MISSING_DEPENDENCY -> Message.Error.MISSING_DEPEND.format("Economy")
     }
     return true.also { MessageSender.sendMessage(sender, message) }
   }

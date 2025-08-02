@@ -11,6 +11,8 @@ import org.jetbrains.annotations.NotNull;
 import xyz.aeolia.lib.manager.EconManager;
 import xyz.aeolia.lib.sender.MessageSender;
 
+import java.util.Objects;
+
 import static xyz.aeolia.lib.utils.Message.Econ.SOLD;
 import static xyz.aeolia.lib.utils.Message.Econ.TOO_MANY;
 import static xyz.aeolia.lib.utils.Message.Generic.*;
@@ -52,7 +54,7 @@ public class HeadSellCommandExecutor implements CommandExecutor {
 
         int worth = this.plugin.getConfig().getInt("head-worth") * amountToSell;
         player.getInventory().getItemInMainHand().setAmount(itemInHand.getAmount() - amountToSell);
-        EconManager.getEcon().depositPlayer(player, worth);
+        Objects.requireNonNull(EconManager.getEcon()).depositPlayer(player, worth);
         MessageSender.sendMessage(player, String.format(SOLD, amountToSell, (amountToSell == 1 ? "head":"heads"),
                 this.plugin.getConfig().getString("currency-symbol"), worth), true);
         return true;
