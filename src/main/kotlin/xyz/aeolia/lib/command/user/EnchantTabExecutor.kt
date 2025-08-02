@@ -72,9 +72,8 @@ class EnchantTabExecutor(val plugin: JavaPlugin) : TabExecutor {
       }
       return true.also { MessageSender.sendMessage(sender, message, false) }
     }
-    val level: Int
-    try {
-      level = Integer.parseInt(args[1])
+    val level = try {
+      Integer.parseInt(args[1])
     } catch (_: NumberFormatException) {
       return false.also { MessageSender.sendMessage(sender, "Not a valid number for the enchantment level. Usage:") }
     }
