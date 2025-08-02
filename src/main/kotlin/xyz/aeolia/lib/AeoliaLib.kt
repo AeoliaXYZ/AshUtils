@@ -50,7 +50,7 @@ open class AeoliaLib : JavaPlugin() {
     KitManager.init(this)
     MessageSender.init(this)
     UserManager.init(this)
-    UserMapManager.loadUserMap()
+    UserMapManager.init(this)
     WebhookSender.init(this)
     val mineListener = MineListener(this)
     // Repeaters
