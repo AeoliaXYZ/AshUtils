@@ -46,12 +46,19 @@ class EnchantTabExecutor(val plugin: JavaPlugin) : TabExecutor {
     sender: CommandSender,
     command: Command,
     label: String,
-    args: Array<out String>
+    argsIn: Array<out String>
   ): Boolean {
+    val args = mutableListOf<String>()
+    args.addAll(argsIn)
     if(sender !is Player) return true.also { MessageSender.sendMessage(sender, Message.Generic.NOT_PLAYER) }
-    if(args.size != 2) return false.also { MessageSender.sendMessage(sender, Message.Generic.COMMAND_USAGE) }
+    if(args.isEmpty() || args.size > 2) return false.also { MessageSender.sendMessage(sender, Message.Generic.COMMAND_USAGE) }
     val enchant = EnchantmentManager.nameToEnchant(args[0]) ?: run {
       return true.also { MessageSender.sendMessage(sender, "That enchantment was not found!") }
+    }
+
+    if (args.size == 1) {
+      val maxLevel = EnchantmentManager.enchantments[enchant]!!.size
+      args.add(maxLevel.toString())
     }
 
     val currencySymbol = plugin.config.getString("currency-symbol")
