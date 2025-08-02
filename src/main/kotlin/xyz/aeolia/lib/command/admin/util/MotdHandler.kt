@@ -13,15 +13,13 @@ object MotdHandler : SubCommandHandler() {
   override fun handle(sender: CommandSender, args: Array<out String>): Boolean {
     if (args.isEmpty()) {
       motd = null
-      MessageSender.sendMessage(sender, "MOTD reset!")
-      return true
+      return true.also { MessageSender.sendMessage(sender, "MOTD reset!") }
     }
     motd = args.joinToString(" ")
     MessageSender.sendMessage(sender, "MOTD set to:")
-    val broadcastStatus = WebhookSender.broadcast(MessageSender.miniMessage.deserialize(motd!!))
-    if (broadcastStatus) return true
-    MessageSender.sendMessage(sender, REQUEST_FAIL_GENERIC)
-    MessageSender.sendMessage(
+    if (!WebhookSender.broadcast(MessageSender.miniMessage.deserialize(motd!!)))
+      MessageSender.sendMessage(sender, REQUEST_FAIL_GENERIC)
+    else MessageSender.sendMessage(
       sender, "It will persist until the server restarts or you reset it by " +
               "running this command again without an argument."
     )
