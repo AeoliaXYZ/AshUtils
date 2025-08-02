@@ -88,7 +88,7 @@ object UserManager {
     if (users.isEmpty()) {
       return
     }
-    CompletableFuture.supplyAsync<Any?> {
+    CompletableFuture.supplyAsync {
       users.values.forEach { saveUser(it) }
       plugin.logger.info("Saved " + users.size + " users!")
       null
