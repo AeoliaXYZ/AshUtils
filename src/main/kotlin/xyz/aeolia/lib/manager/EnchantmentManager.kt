@@ -46,7 +46,7 @@ object EnchantmentManager {
 
   private fun reloadEnchantmentsCoro(recipient: Audience? = null) {
     val file = File(plugin.dataFolder, "enchantments.json")
-    if(!file.exists()) {
+    if (!file.exists()) {
       plugin.saveResource("enchantments.json", false)
     }
     val json = file.readText()
@@ -102,18 +102,15 @@ object EnchantmentManager {
   Returns the price of the item or an error code.
    */
   fun addAndDebit(enchantment: Enchantment, level: Int, item: ItemStack, player: Player): Pair<EnchantResult, Int> {
-    val econ = EconManager.getEcon()
+    val econ = EconManager.econ ?: return EnchantResult.MISSING_DEPENDENCY to 0
     val enchantmentValue = enchantments.getOrElse(enchantment) {
       plugin.logger.severe("Unrecognised enchantment $enchantment!")
       return EnchantResult.INVALID_ENCHANTMENT to 0
     }
-    val price = enchantmentValue.getOrElse(level - 1) {
-      return EnchantResult.INVALID_LEVEL to 0
-    }
+    val price = enchantmentValue.getOrElse(level - 1) { return EnchantResult.INVALID_LEVEL to 0 }
     if (econ.getBalance(player) < price) return EnchantResult.INSUFFICIENT_FUNDS to 0
     val enchantResult = addSafeEnchant(enchantment, level, item)
-    if (enchantResult != EnchantResult.SUCCESS)
-      return enchantResult to 0
+    if (enchantResult != EnchantResult.SUCCESS) return enchantResult to 0
     econ.withdrawPlayer(player, price.toDouble())
     return enchantResult to price
   }

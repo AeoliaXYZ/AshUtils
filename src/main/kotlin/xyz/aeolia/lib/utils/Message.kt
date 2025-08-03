@@ -8,6 +8,7 @@ object Message {
   }
   object Error {
     const val CONFIG = "The config is not correctly configured - it is missing field %s."
+    const val MISSING_DEPEND = "Dependency %s is missing. Please check /plugins."
     const val GENERIC = "An internal error occurred. Please contact an administrator."
     const val REQUEST_FAIL = "The HTTP request failed with code %s. Response: %s."
     const val REQUEST_FAIL_GENERIC = "The HTTP request failed. Check console for more details."

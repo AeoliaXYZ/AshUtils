@@ -46,12 +46,19 @@ class EnchantTabExecutor(val plugin: JavaPlugin) : TabExecutor {
     sender: CommandSender,
     command: Command,
     label: String,
-    args: Array<out String>
+    argsIn: Array<out String>
   ): Boolean {
+    val args = mutableListOf<String>()
+    args.addAll(argsIn)
     if(sender !is Player) return true.also { MessageSender.sendMessage(sender, Message.Generic.NOT_PLAYER) }
-    if(args.size != 2) return false.also { MessageSender.sendMessage(sender, Message.Generic.COMMAND_USAGE) }
+    if(args.isEmpty() || args.size > 2) return false.also { MessageSender.sendMessage(sender, Message.Generic.COMMAND_USAGE) }
     val enchant = EnchantmentManager.nameToEnchant(args[0]) ?: run {
-      return true.also { MessageSender.sendMessage(sender, "This enchantment was not found!") }
+      return true.also { MessageSender.sendMessage(sender, "That enchantment was not found!") }
+    }
+
+    if (args.size == 1) {
+      val maxLevel = EnchantmentManager.enchantments[enchant]!!.size
+      args.add(maxLevel.toString())
     }
 
     val currencySymbol = plugin.config.getString("currency-symbol")
@@ -65,9 +72,8 @@ class EnchantTabExecutor(val plugin: JavaPlugin) : TabExecutor {
       }
       return true.also { MessageSender.sendMessage(sender, message, false) }
     }
-    val level: Int
-    try {
-      level = Integer.parseInt(args[1])
+    val level = try {
+      Integer.parseInt(args[1])
     } catch (_: NumberFormatException) {
       return false.also { MessageSender.sendMessage(sender, "Not a valid number for the enchantment level. Usage:") }
     }
@@ -81,6 +87,7 @@ class EnchantTabExecutor(val plugin: JavaPlugin) : TabExecutor {
       EnchantResult.INCOMPATIBLE_ENCHANTMENT -> "That enchantment is not compatible with this item."
       EnchantResult.INVALID_ENCHANTMENT -> "That enchantment was not found!"
       EnchantResult.INSUFFICIENT_FUNDS -> "You don't have enough money to purchase that enchantment."
+      EnchantResult.MISSING_DEPENDENCY -> Message.Error.MISSING_DEPEND.format("Economy")
     }
     return true.also { MessageSender.sendMessage(sender, message) }
   }

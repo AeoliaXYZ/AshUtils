@@ -1,6 +1,6 @@
 package xyz.aeolia.lib.command.user;
 
-import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.text.RandomStringGenerator;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -31,14 +31,22 @@ public class CodeCommandExecutor implements CommandExecutor {
       MessageSender.sendMessage(sender, NOT_PLAYER, true);
       return true;
     }
-    String code = RandomStringUtils.randomAlphanumeric(6).toUpperCase();
+    String code = new RandomStringGenerator.Builder()
+            .withinRange('0', 'Z')
+            .filteredBy(Character::isLetterOrDigit)
+            .build()
+            .generate(6);
 
     URI uri;
     try {
       uri = new URI(Objects.requireNonNull(plugin.getConfig().getString("discord.code-webhook")));
     } catch (URISyntaxException e) {
       plugin.getLogger().severe("discord.code-webhook URI invalid. Please check your config.");
-      e.printStackTrace();
+      StringBuilder stackTrace = new StringBuilder();
+      for (StackTraceElement element : e.getStackTrace()) {
+        stackTrace.append(element.toString()).append("\n");
+      }
+      plugin.getLogger().severe(stackTrace.toString());
       MessageSender.sendMessage(sender, GENERIC, true);
       return true;
     }
@@ -50,7 +58,7 @@ public class CodeCommandExecutor implements CommandExecutor {
     }
 
     MessageSender.sendMessage(sender, "Your code is <aqua>" + code
-            + "</aqua>. Staff may ask you for this code to verify you own your account. It is valid for 24 hours.",
+                    + "</aqua>. Staff may ask you for this code to verify you own your account. It is valid for 24 hours.",
             true);
     return true;
   }
