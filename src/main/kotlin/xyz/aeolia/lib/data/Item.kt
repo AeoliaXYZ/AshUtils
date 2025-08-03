@@ -17,6 +17,8 @@ class Item(
   val enchantments: MutableMap<String, Int>? = null
 ) {
 
+  val materialUpper = material.uppercase()
+
   val woolTypes: List<Material> by lazy {
     listOf(
       Material.WHITE_WOOL,
@@ -31,18 +33,24 @@ class Item(
       Material.CYAN_WOOL,
       Material.LIGHT_BLUE_WOOL,
       Material.LIME_WOOL
-      )
+    )
   }
 
   fun loadStack(): ItemStack? {
     val mm = MessageSender.miniMessage
-    val material = Material.getMaterial(this.material.uppercase()) ?: run {
-      if (this.material.uppercase() == "WOOL") {
+
+    val material = try {
+      Material.getMaterial(materialUpper)
+        ?: throw Throwable("Material ${this.materialUpper} not found")
+    } catch (_: Throwable) {
+      if (materialUpper == "WOOL") {
         woolTypes.random()
+      } else {
+        MessageSender.sendMessage(Bukkit.getConsoleSender(), "Material ${this.material.uppercase()} not found")
+        return null
       }
-      MessageSender.sendMessage(Bukkit.getConsoleSender(), "Material ${this.material.uppercase()} not found")
-      return null
     }
+
     val stack = ItemStack.of(material, this.amount)
     val meta = stack.itemMeta!!
 
@@ -64,7 +72,6 @@ class Item(
     }
 
     stack.itemMeta = meta
-    MessageSender.sendMessage(Bukkit.getConsoleSender(), "Loaded stack $stack")
     return stack
   }
 }
