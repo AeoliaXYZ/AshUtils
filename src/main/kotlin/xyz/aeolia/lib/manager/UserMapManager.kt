@@ -14,7 +14,7 @@ import java.util.function.Consumer
 import java.util.function.Function
 
 object UserMapManager {
-  private val filePath = plugin.dataFolder.toString() + "/users.json"
+  private lateinit var filePath: String
 
   @JvmStatic
   var userMap: MutableMap<String, String> = mutableMapOf()
@@ -25,6 +25,7 @@ object UserMapManager {
 
   fun init(plugin: JavaPlugin) {
     this.plugin = plugin
+    this.filePath = plugin.dataFolder.toString() + "/users.json"
     loadUserMap()
   }
 
