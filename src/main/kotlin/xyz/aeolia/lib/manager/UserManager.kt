@@ -33,6 +33,7 @@ object UserManager {
   }
 
   @JvmStatic
+  @JvmOverloads
   fun getUser(player: OfflinePlayer, recurse: Boolean = false): User {
     val uuid = player.uniqueId
     users[uuid]?.let { return it }
