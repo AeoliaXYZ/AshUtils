@@ -1,6 +1,5 @@
 package xyz.aeolia.lib.listener
 
-import xyz.aeolia.lib.data.LibBlock
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
@@ -14,9 +13,10 @@ import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.player.PlayerChangedWorldEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.plugin.java.JavaPlugin
+import xyz.aeolia.lib.data.LibBlock
+import xyz.aeolia.lib.data.User
 import xyz.aeolia.lib.manager.UserManager
 import xyz.aeolia.lib.sender.MessageSender
-import xyz.aeolia.lib.data.User
 import xyz.aeolia.lib.utils.Message
 
 class PVPListener(val plugin: JavaPlugin) : Listener {
@@ -124,8 +124,12 @@ class PVPListener(val plugin: JavaPlugin) : Listener {
         val z = spawnLocation["z"] ?: return@run null.also {
           plugin.logger.warning("Invalid PVP spawn location: z coordinate is missing")
         }
-
-        Location(Bukkit.getServer().getWorld(plugin.config.getString("pvp.world")!!), x, y, z)
+        val yaw = spawnLocation["yaw"] ?: 0.0
+        val pitch = spawnLocation["pitch"] ?: 0.0
+        Location(
+          Bukkit.getServer().getWorld(plugin.config.getString("pvp.world")!!),
+          x, y, z, yaw.toFloat(), pitch.toFloat()
+        )
       } ?: run {
         MessageSender.sendMessage(player, Message.Error.TELEPORT_FAIL)
         return

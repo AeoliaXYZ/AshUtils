@@ -53,6 +53,8 @@ class PVPCommandExecutor(p: JavaPlugin) : CommandExecutor, PVPMenu(p) {
       locationMap["x"] = location.blockX.toDouble() + 0.5 //Centre on block
       locationMap["y"] = location.blockY.toDouble()
       locationMap["z"] = location.blockZ.toDouble() + 0.5
+      locationMap["yaw"] = location.yaw.toDouble()
+      locationMap["pitch"] = location.pitch.toDouble()
       val newSpawnLocations = spawnLocations.plus(locationMap)
       plugin.config.set("pvp.spawn-locations", newSpawnLocations)
       plugin.saveConfig()
