@@ -76,9 +76,10 @@ object UserManager {
     if (user.uuid == null) return // Prevent data loss from saving malformed users
     val file = File(folder, user.uuid.toString() + ".json")
     try {
-      val fileWriter = FileWriter(file)
-      fileWriter.write(Json.encodeToString(user))
-      fileWriter.close()
+      FileWriter(file).use {
+        it.write(Json.encodeToString(user))
+        it.flush()
+      }
     } catch (e: IOException) {
       throw RuntimeException(e)
     }
