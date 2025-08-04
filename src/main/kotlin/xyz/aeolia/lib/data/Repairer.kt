@@ -21,8 +21,16 @@ class Repairer(val item: ItemStack, val player: Player, val rm: RepairerManager)
   }
 
   fun repair() : Double {
-    item.itemMeta = ((item.itemMeta as? Damageable) ?: return 0.0).apply { damage = 0 }
+    if (!isRepairable()) return 0.0
+    item.itemMeta = ((item.itemMeta as? Damageable) ?: return 0.0).apply {
+      damage = 0
+    }
     econ?.withdrawPlayer(player, costToRepair)
     return costToRepair
+  }
+
+  fun isRepairable(): Boolean {
+    val meta = item.itemMeta ?: return false
+    return meta is Damageable && item.type.maxDurability > 0 && meta.damage > 0
   }
 }
