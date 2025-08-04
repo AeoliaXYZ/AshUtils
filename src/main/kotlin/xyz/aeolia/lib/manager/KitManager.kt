@@ -33,9 +33,7 @@ object KitManager {
   }
 
   private fun initCoroutine(recipient: Audience? = null) {
-    kits.forEach {
-      kits.remove(it.key)
-    }
+    kits.clear()
     val folder = File(plugin.dataFolder, "kits")
     if (!folder.exists()) {
       folder.mkdirs()
