@@ -32,6 +32,9 @@ public class XpCommandExecutor implements CommandExecutor {
       MessageSender.sendMessage(sender, NOT_PLAYER, true);
       return true;
     }
+    if (args.length == 0) {
+      MessageSender.sendMessage(sender, COMMAND_USAGE, true);
+    }
     if (args.length > 1) {
       MessageSender.sendMessage(player, TOO_MANY_ARGS, true);
       return false;
@@ -60,6 +63,7 @@ public class XpCommandExecutor implements CommandExecutor {
     if (costPerXp > playerBalance) {
       MessageSender.sendMessage(player, "You need at least " + aqua + currencySymbol + costPerXp + reset +
               " to buy XP!", true);
+      return true;
     }
 
     if (arg.equalsIgnoreCase("max") || arg.equalsIgnoreCase("maximum")) {
@@ -75,6 +79,7 @@ public class XpCommandExecutor implements CommandExecutor {
     if (totalCost > playerBalance) {
       MessageSender.sendMessage(player, "You don't have enough money for that! You can buy a maximum of " + aqua
               + maximumXpPurchasable + reset + " XP.", true);
+      return true;
     }
     int xpMaximumBuy = plugin.getConfig().getInt("xp.maximum-buy");
     if (xpToBuy > xpMaximumBuy && xpMaximumBuy > 0) {
@@ -112,7 +117,7 @@ public class XpCommandExecutor implements CommandExecutor {
         return true;
       }
     }
-    double worthPerXp = plugin.getConfig().getInt("xp.sell-worth");
+    double worthPerXp = plugin.getConfig().getDouble("xp.sell-worth");
     double totalWorth = (BigDecimal.valueOf(worthPerXp).multiply(BigDecimal.valueOf(xpToSell))).doubleValue();
     experienceManager.setTotalExperience(playerCurrentXp - xpToSell);
     econ.depositPlayer(player, totalWorth);
