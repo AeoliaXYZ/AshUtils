@@ -17,7 +17,7 @@ import xyz.aeolia.lib.sender.MessageSender.sendMessage
 import xyz.aeolia.lib.utils.Message
 
 class RepairTabExecutor(val plugin: JavaPlugin) : TabExecutor {
-  val econ: Economy? = EconManager.econ
+  private val econ: Economy? = EconManager.econ
 
   override fun onTabComplete(
     sender: CommandSender,
