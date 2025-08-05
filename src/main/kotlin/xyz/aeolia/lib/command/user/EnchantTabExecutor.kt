@@ -4,7 +4,6 @@ import org.bukkit.Material
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 import org.bukkit.command.TabExecutor
-import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.util.StringUtil
 import xyz.aeolia.lib.data.EnchantResult
@@ -12,8 +11,6 @@ import xyz.aeolia.lib.manager.EnchantmentManager
 import xyz.aeolia.lib.player
 import xyz.aeolia.lib.sender.MessageSender
 import xyz.aeolia.lib.utils.Message
-import java.util.*
-import kotlin.collections.sort
 
 class EnchantTabExecutor(val plugin: JavaPlugin) : TabExecutor {
   override fun onTabComplete(

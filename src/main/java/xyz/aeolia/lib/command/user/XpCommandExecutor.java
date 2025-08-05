@@ -8,8 +8,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import xyz.aeolia.lib.manager.EconManager;
-import xyz.aeolia.lib.utils.Experience;
 import xyz.aeolia.lib.sender.MessageSender;
+import xyz.aeolia.lib.utils.Experience;
 
 import java.math.BigDecimal;
 

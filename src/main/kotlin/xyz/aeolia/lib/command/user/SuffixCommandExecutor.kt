@@ -10,12 +10,11 @@ import org.bukkit.command.TabExecutor
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.util.StringUtil
-import xyz.aeolia.lib.utils.Message
 import xyz.aeolia.lib.manager.PermissionManager
 import xyz.aeolia.lib.manager.UserMapManager
 import xyz.aeolia.lib.menu.SuffixMenu
 import xyz.aeolia.lib.sender.MessageSender
-import java.util.*
+import xyz.aeolia.lib.utils.Message
 import java.util.function.Consumer
 
 class SuffixCommandExecutor(var plugin: JavaPlugin) : TabExecutor {

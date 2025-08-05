@@ -7,16 +7,15 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
-import xyz.aeolia.lib.utils.Message.Error.CONFIG
-import xyz.aeolia.lib.utils.Message.Generic.COMMAND_USAGE
-import xyz.aeolia.lib.utils.Message.Generic.NOT_PLAYER
-import xyz.aeolia.lib.utils.Message.Player.NOT_FOUND
-import xyz.aeolia.lib.utils.Message.Player.OFFLINE
 import xyz.aeolia.lib.manager.UserManager
 import xyz.aeolia.lib.manager.UserMapManager
 import xyz.aeolia.lib.miniMessage
 import xyz.aeolia.lib.player
 import xyz.aeolia.lib.sender.MessageSender
+import xyz.aeolia.lib.utils.Message.Error.CONFIG
+import xyz.aeolia.lib.utils.Message.Generic.COMMAND_USAGE
+import xyz.aeolia.lib.utils.Message.Player.NOT_FOUND
+import xyz.aeolia.lib.utils.Message.Player.OFFLINE
 
 class MiniMessageCommandExecutor(val plugin: JavaPlugin) : CommandExecutor {
   override fun onCommand(

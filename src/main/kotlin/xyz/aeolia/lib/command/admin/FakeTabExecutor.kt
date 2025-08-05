@@ -11,7 +11,6 @@ import xyz.aeolia.lib.miniMessage
 import xyz.aeolia.lib.sender.MessageSender
 import xyz.aeolia.lib.utils.Message.Generic.COMMAND_USAGE
 import xyz.aeolia.lib.utils.Message.Generic.NOT_PLAYER_ARGS
-import java.util.*
 
 class FakeTabExecutor(private val plugin: JavaPlugin) : TabExecutor {
   override fun onCommand(
@@ -58,8 +57,8 @@ class FakeTabExecutor(private val plugin: JavaPlugin) : TabExecutor {
     label: String,
     args: Array<String>
   ): MutableList<String> {
-    val completions: MutableList<String> = ArrayList<String>()
-    val commands: MutableList<String> = ArrayList<String>()
+    val completions: MutableList<String> = mutableListOf()
+    val commands: MutableList<String> = mutableListOf()
 
     if (args.size == 1) {
       if (sender.hasPermission("lib.fake")) {

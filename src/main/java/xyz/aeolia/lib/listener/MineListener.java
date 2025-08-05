@@ -1,6 +1,5 @@
 package xyz.aeolia.lib.listener;
 
-import xyz.aeolia.lib.data.LibBlock;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -12,9 +11,10 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import xyz.aeolia.lib.data.LibBlock;
+import xyz.aeolia.lib.manager.UserManager;
 import xyz.aeolia.lib.sender.MessageSender;
 import xyz.aeolia.lib.sender.WebhookSender;
-import xyz.aeolia.lib.manager.UserManager;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -55,7 +55,7 @@ public class MineListener implements Listener {
       // 1.16
       materials.put(Material.NETHER_GOLD_ORE, "nethergold");
       materials.put(Material.ANCIENT_DEBRIS, "ancientdebris");
-    } catch (Throwable t) {
+    } catch (Throwable ignored) {
     }
     try {
       // 1.17 & 1.18
@@ -69,7 +69,7 @@ public class MineListener implements Listener {
 
       materials.put(Material.COPPER_ORE, "copper");
       materials.put(Material.DEEPSLATE_COPPER_ORE, "copper");
-    } catch (Throwable t) {
+    } catch (Throwable ignored) {
     }
   }
 
@@ -112,11 +112,11 @@ public class MineListener implements Listener {
     Player p = event.getPlayer();
     String materialName = materials.get(material);
     int count = findSimilarAdjacentBlocks.size();
-    int lightLevel = (int) block.getLightLevel();
+    int lightLevel = block.getLightLevel();
     for (BlockFace f : faces) {
       try {
         lightLevel = Math.max(lightLevel, block.getRelative(f).getLightLevel());
-      } catch (Exception e) {
+      } catch (Exception ignored) {
       }
     }
     sendMine(p, block, materialName, count, lightLevel);
