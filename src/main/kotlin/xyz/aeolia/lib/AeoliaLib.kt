@@ -114,11 +114,13 @@ open class AeoliaLib : JavaPlugin() {
     UserManager.saveUsers()
   }
 
-  fun setExecutor(command: String, executor: CommandExecutor?) {
+  fun setExecutor(command: String, executor: CommandExecutor) {
     try {
-      this.getCommand(command)?.setExecutor(executor)
-      if (executor is TabExecutor) {
-        this.getCommand(command)?.tabCompleter = executor
+      this.getCommand(command)?.apply {
+        setExecutor(executor)
+        if (executor is TabExecutor) {
+          tabCompleter = executor
+        }
       }
     } catch (_: NullPointerException) {
       this.logger.warning("$command is not registered in the plugin.yml. Check your build.")
