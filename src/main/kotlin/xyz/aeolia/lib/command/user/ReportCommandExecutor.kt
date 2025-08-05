@@ -20,9 +20,9 @@ class ReportCommandExecutor(var plugin: JavaPlugin) : CommandExecutor {
   override fun onCommand(
     sender: CommandSender,
     command: Command,
-    label: String,
-    args: Array<out String>
-  ): Boolean {
+    label: kotlin.String,
+    args: Array<kotlin.String>
+  ) : Boolean {
     if (sender !is Player) {
       MessageSender.sendMessage(sender, NOT_PLAYER, true)
       return true
