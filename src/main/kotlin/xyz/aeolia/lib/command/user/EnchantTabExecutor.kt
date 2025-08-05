@@ -9,6 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.util.StringUtil
 import xyz.aeolia.lib.data.EnchantResult
 import xyz.aeolia.lib.manager.EnchantmentManager
+import xyz.aeolia.lib.player
 import xyz.aeolia.lib.sender.MessageSender
 import xyz.aeolia.lib.utils.Message
 import java.util.*
@@ -43,14 +44,14 @@ class EnchantTabExecutor(val plugin: JavaPlugin) : TabExecutor {
   }
 
   override fun onCommand(
-    sender: CommandSender,
+    senderIn: CommandSender,
     command: Command,
     label: String,
     argsIn: Array<out String>
   ): Boolean {
     val args = mutableListOf<String>()
     args.addAll(argsIn)
-    if(sender !is Player) return true.also { MessageSender.sendMessage(sender, Message.Generic.NOT_PLAYER) }
+    val sender = senderIn.player() ?: return true
     if(args.isEmpty() || args.size > 2) return false.also { MessageSender.sendMessage(sender, Message.Generic.COMMAND_USAGE) }
     val enchant = EnchantmentManager.nameToEnchant(args[0]) ?: run {
       return true.also { MessageSender.sendMessage(sender, "That enchantment was not found!") }

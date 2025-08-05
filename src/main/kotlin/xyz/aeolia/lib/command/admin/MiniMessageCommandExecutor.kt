@@ -15,20 +15,18 @@ import xyz.aeolia.lib.utils.Message.Player.OFFLINE
 import xyz.aeolia.lib.manager.UserManager
 import xyz.aeolia.lib.manager.UserMapManager
 import xyz.aeolia.lib.miniMessage
+import xyz.aeolia.lib.player
 import xyz.aeolia.lib.sender.MessageSender
 
 class MiniMessageCommandExecutor(val plugin: JavaPlugin) : CommandExecutor {
   override fun onCommand(
-    sender: CommandSender,
+    senderIn: CommandSender,
     command: Command,
     label: String,
     argsInput: Array<out String>
   ): Boolean {
+    val sender = senderIn.player() ?: return true
     var args = argsInput
-    if (sender !is Player) {
-      MessageSender.sendMessage(sender, NOT_PLAYER, true)
-      return true
-    }
     if (args.isEmpty()) {
       MessageSender.sendMessage(sender, COMMAND_USAGE, true)
       return false

@@ -8,20 +8,18 @@ import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import xyz.aeolia.lib.listener.PVPListener
 import xyz.aeolia.lib.menu.PVPMenu
+import xyz.aeolia.lib.player
 import xyz.aeolia.lib.sender.MessageSender.sendMessage
 import xyz.aeolia.lib.utils.Message
 
 class PVPCommandExecutor(p: JavaPlugin) : CommandExecutor, PVPMenu(p) {
   override fun onCommand(
-    sender: CommandSender,
+    senderIn: CommandSender,
     command: Command,
     label: String,
     args: Array<out String>
   ): Boolean {
-    if (sender !is Player) {
-      sendMessage(sender, Message.Generic.NOT_PLAYER)
-      return true
-    }
+    val sender = senderIn.player() ?: return true
     if (args.isEmpty() || (!sender.hasPermission("lib.pvp.manage"))) {
       inventory.open(sender)
       return true
