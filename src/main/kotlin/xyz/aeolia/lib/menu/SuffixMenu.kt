@@ -98,6 +98,7 @@ class SuffixMenu(private val plugin: JavaPlugin) : InventoryProvider {
   }
 
   companion object {
+    @JvmStatic
     fun formatSuffix(s: String, miniMessage: Boolean): String {
       val formatted = "the " + s
         .replace('_', ' ')
