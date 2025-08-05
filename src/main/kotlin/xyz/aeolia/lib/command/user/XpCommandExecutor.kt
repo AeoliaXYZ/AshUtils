@@ -34,6 +34,7 @@ class XpCommandExecutor(var plugin: JavaPlugin) : CommandExecutor {
     }
     if (args.isEmpty()) {
       MessageSender.sendMessage(sender, COMMAND_USAGE, true)
+      return true
     }
     if (args.size > 1) {
       MessageSender.sendMessage(sender, TOO_MANY_ARGS, true)
@@ -146,6 +147,6 @@ class XpCommandExecutor(var plugin: JavaPlugin) : CommandExecutor {
 
   private fun formatCurrency(value: Double): String {
     val currencySymbol: String = plugin.config.getString("currency-symbol")!!
-    return "$aqua$currencySymbol${String.format("%2f", value)}$reset"
+    return "$aqua$currencySymbol${String.format("%.2f", value)}$reset"
   }
 }
