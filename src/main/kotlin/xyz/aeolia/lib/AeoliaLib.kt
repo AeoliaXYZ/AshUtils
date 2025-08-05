@@ -18,6 +18,7 @@ import java.time.Instant
 
 open class AeoliaLib : JavaPlugin() {
   val configManager = ConfigManager(this, true)
+  var registeredCommands = 0
 
   override fun onEnable() {
     logger.info("Started load...")
@@ -94,7 +95,7 @@ open class AeoliaLib : JavaPlugin() {
     for (command in commands) {
       setExecutor(command.key, command.value)
     }
-    logger.info("Commands registered!")
+    logger.info("Commands registered: $registeredCommands")
     // Toggle
     StatusManager.setStatus("restartonempty", false)
     StatusManager.setStatus("lockchat", false)
@@ -118,6 +119,7 @@ open class AeoliaLib : JavaPlugin() {
     try {
       this.getCommand(command)?.apply {
         setExecutor(executor)
+        registeredCommands++
         if (executor is TabExecutor) {
           tabCompleter = executor
         }
