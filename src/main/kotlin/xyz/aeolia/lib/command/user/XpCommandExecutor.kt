@@ -7,9 +7,11 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import xyz.aeolia.lib.manager.EconManager
+import xyz.aeolia.lib.player
 import xyz.aeolia.lib.sender.MessageSender
 import xyz.aeolia.lib.utils.Experience
 import xyz.aeolia.lib.utils.Message.Error.GENERIC
+import xyz.aeolia.lib.utils.Message.Error.MISSING_DEPEND
 import xyz.aeolia.lib.utils.Message.Generic.COMMAND_USAGE
 import xyz.aeolia.lib.utils.Message.Generic.NOT_PLAYER
 import xyz.aeolia.lib.utils.Message.Generic.TOO_MANY_ARGS
@@ -17,21 +19,18 @@ import java.math.BigDecimal
 import kotlin.math.floor
 
 class XpCommandExecutor(var plugin: JavaPlugin) : CommandExecutor {
-  var aqua: String = "<aqua>"
-  var reset: String = "</aqua>"
-  var econ: Economy? = EconManager.econ
+  val aqua: String = "<aqua>"
+  val reset: String = "</aqua>"
+  val econ: Economy? = EconManager.econ
 
   override fun onCommand(
-    sender:
-    CommandSender,
+    senderIn: CommandSender,
     command: Command,
     label: String,
     args: Array<String>
   ): Boolean {
-    if (sender !is Player) {
-      MessageSender.sendMessage(sender, NOT_PLAYER, true)
-      return true
-    }
+    val sender = senderIn.player() ?: return true
+
     if (args.isEmpty()) {
       MessageSender.sendMessage(sender, COMMAND_USAGE, true)
       return true
@@ -40,9 +39,13 @@ class XpCommandExecutor(var plugin: JavaPlugin) : CommandExecutor {
       MessageSender.sendMessage(sender, TOO_MANY_ARGS, true)
       return false
     }
+    if (econ == null) {
+      MessageSender.sendMessage(sender, MISSING_DEPEND.format("Economy"), true)
+      return true
+    }
     val experience = Experience(sender)
 
-    when (command.name) {
+    when (command.name.lowercase()) {
       "xpbuy" -> return buyXp(sender, args[0], experience, experience.getTotalExperience())
       "xpsell" -> return sellXp(sender, args[0], experience, experience.getTotalExperience())
       else -> {
@@ -79,7 +82,7 @@ class XpCommandExecutor(var plugin: JavaPlugin) : CommandExecutor {
       MessageSender.sendMessage(player, COMMAND_USAGE, true)
       return false
     }
-    val totalCost = (BigDecimal.valueOf(costPerXp).multiply(BigDecimal.valueOf(xpToBuy.toLong()))).toDouble()
+    val totalCost = costPerXp * xpToBuy
     if (totalCost > playerBalance) {
       MessageSender.sendMessage(
         player, ("You don't have enough money for that! You can buy a maximum of " +
@@ -95,7 +98,7 @@ class XpCommandExecutor(var plugin: JavaPlugin) : CommandExecutor {
       )
       xpToBuy = xpMaximumBuy
     }
-    econ!!.withdrawPlayer(player, totalCost)
+    econ.withdrawPlayer(player, totalCost)
     experience.totalExperience = playerCurrentXp + xpToBuy
 
     MessageSender.sendMessage(
@@ -135,7 +138,7 @@ class XpCommandExecutor(var plugin: JavaPlugin) : CommandExecutor {
       }
     }
     val worthPerXp = plugin.config.getDouble("xp.sell-worth")
-    val totalWorth = (BigDecimal.valueOf(worthPerXp).multiply(BigDecimal.valueOf(xpToSell.toLong()))).toDouble()
+    val totalWorth = worthPerXp * xpToSell
     experienceManager.totalExperience = playerCurrentXp - xpToSell
     econ!!.depositPlayer(player, totalWorth)
     MessageSender.sendMessage(
