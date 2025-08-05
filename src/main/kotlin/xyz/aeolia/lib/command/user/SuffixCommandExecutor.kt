@@ -25,7 +25,7 @@ class SuffixCommandExecutor(var plugin: JavaPlugin) : TabExecutor {
   ): Boolean {
     if (args.isEmpty()) {
       if (sender is Player) {
-        SuffixMenu(plugin).INVENTORY.open(sender)
+        SuffixMenu(plugin).inventory.open(sender)
         return true
       } else {
         MessageSender.sendMessage(sender, "This command can only be executed by a player without an argument.")
@@ -33,7 +33,7 @@ class SuffixCommandExecutor(var plugin: JavaPlugin) : TabExecutor {
       }
     }
     if (!sender.hasPermission("lib.suffix-grant")) {
-      if (sender is Player) SuffixMenu(plugin).INVENTORY.open(sender)
+      if (sender is Player) SuffixMenu(plugin).inventory.open(sender)
       return true
     }
 
@@ -63,11 +63,11 @@ class SuffixCommandExecutor(var plugin: JavaPlugin) : TabExecutor {
         }
       return true
     }
-    if (args.size != 3) return invEx(sender)
+    if (args.size != 3) return invalidExecution(sender)
     val status: Boolean = when (args[0]) {
       "grant" -> true
       "revoke" -> false
-      else -> return invEx(sender)
+      else -> return invalidExecution(sender)
     }
     val uuid = UserMapManager.getUuidFromName(args[1])
     if (uuid == null) {
@@ -96,8 +96,7 @@ class SuffixCommandExecutor(var plugin: JavaPlugin) : TabExecutor {
     return true
   }
 
-  fun invEx(sender: CommandSender): Boolean {
-    // Short for invalid execution
+  fun invalidExecution(sender: CommandSender): Boolean {
     MessageSender.sendMessage(sender, Message.Generic.COMMAND_USAGE)
     MessageSender.sendMessage(sender, "/suffix [grant/revoke] <user> <suffix>", false)
     return true
