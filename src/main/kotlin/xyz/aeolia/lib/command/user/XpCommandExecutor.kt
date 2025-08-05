@@ -13,9 +13,7 @@ import xyz.aeolia.lib.utils.Experience
 import xyz.aeolia.lib.utils.Message.Error.GENERIC
 import xyz.aeolia.lib.utils.Message.Error.MISSING_DEPEND
 import xyz.aeolia.lib.utils.Message.Generic.COMMAND_USAGE
-import xyz.aeolia.lib.utils.Message.Generic.NOT_PLAYER
 import xyz.aeolia.lib.utils.Message.Generic.TOO_MANY_ARGS
-import java.math.BigDecimal
 import kotlin.math.floor
 
 class XpCommandExecutor(var plugin: JavaPlugin) : CommandExecutor {
