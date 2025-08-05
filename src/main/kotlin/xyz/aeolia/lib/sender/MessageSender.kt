@@ -5,21 +5,14 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver
 import org.bukkit.plugin.java.JavaPlugin
+import xyz.aeolia.lib.miniMessage
 
 object MessageSender {
-  lateinit var miniMessage: MiniMessage
   lateinit var plugin: JavaPlugin
 
   @JvmStatic
   fun init(plugin: JavaPlugin) {
     this.plugin = plugin
-    miniMessage = MiniMessage.builder()
-      .tags(
-        TagResolver.builder()
-          .resolver(TagResolver.standard())
-          .build()
-      )
-      .build()
   }
 
   @JvmStatic
@@ -29,7 +22,7 @@ object MessageSender {
     includePrefix: Boolean = true
   ) {
     if (message.isNullOrEmpty()) return
-    sendMessage(recipient, miniMessage.deserialize(message), includePrefix)
+    sendMessage(recipient, message.miniMessage(), includePrefix)
 
   }
 
@@ -37,7 +30,7 @@ object MessageSender {
   fun sendMessage(recipient: Audience, message: Component, includePrefix: Boolean = true) {
     val toSend: Component
     if (includePrefix) {
-      val prefix = miniMessage.deserialize(plugin.config.getString("chat-prefix") + " <reset>")
+      val prefix = (plugin.config.getString("chat-prefix") + " <reset>").miniMessage()
       toSend = Component.text()
         .append(prefix)
         .append(message)

@@ -7,6 +7,7 @@ import org.bukkit.command.TabExecutor
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.util.StringUtil
+import xyz.aeolia.lib.miniMessage
 import xyz.aeolia.lib.sender.MessageSender
 import xyz.aeolia.lib.utils.Message.Generic.COMMAND_USAGE
 import xyz.aeolia.lib.utils.Message.Generic.NOT_PLAYER_ARGS
@@ -46,7 +47,7 @@ class FakeTabExecutor(private val plugin: JavaPlugin) : TabExecutor {
         return false
       }
     }
-    val deserialized = MessageSender.miniMessage.deserialize(message)
+    val deserialized = message.miniMessage()
     Bukkit.getServer().broadcast(deserialized)
     return true
   }
