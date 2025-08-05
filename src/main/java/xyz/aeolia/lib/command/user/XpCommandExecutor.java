@@ -90,7 +90,7 @@ public class XpCommandExecutor implements CommandExecutor {
     econ.withdrawPlayer(player, totalCost);
     experienceManager.setTotalExperience(playerCurrentXp + xpToBuy);
 
-    MessageSender.sendMessage(player, "You have bought " + aqua + xpToBuy + " XP" + reset + "@ " + aqua + currencySymbol
+    MessageSender.sendMessage(player, "You have bought " + aqua + xpToBuy + " XP " + reset + "@ " + aqua + currencySymbol
             + costPerXp + reset + " per XP for " + aqua + currencySymbol + totalCost + reset + ".", true);
     return true;
   }
