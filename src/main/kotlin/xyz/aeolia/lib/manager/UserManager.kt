@@ -87,13 +87,16 @@ object UserManager {
 
   @JvmStatic
   fun saveUsers() {
+    CompletableFuture.runAsync {
+      saveUsersBlocking()
+    }
+  }
+
+  fun saveUsersBlocking() {
     if (users.isEmpty()) {
       return
     }
-    CompletableFuture.supplyAsync {
-      users.values.forEach { saveUser(it) }
-      plugin.logger.info("Saved " + users.size + " users!")
-      null
-    }
+    users.values.forEach { saveUser(it) }
+    plugin.logger.info("Saved " + users.size + " users!")
   }
 }

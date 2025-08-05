@@ -120,7 +120,8 @@ open class AeoliaLib : JavaPlugin() {
 
 
   override fun onDisable() {
-    saveAll()
+    UserMapManager.saveUserMap()
+    UserManager.saveUsersBlocking()
     KitManager.cleanup()
   }
 
