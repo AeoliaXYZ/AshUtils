@@ -7,7 +7,6 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
-import xyz.aeolia.lib.manager.UserManager
 import xyz.aeolia.lib.manager.UserMapManager
 import xyz.aeolia.lib.miniMessage
 import xyz.aeolia.lib.player

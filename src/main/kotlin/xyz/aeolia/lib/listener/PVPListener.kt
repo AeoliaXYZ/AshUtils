@@ -15,7 +15,6 @@ import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.plugin.java.JavaPlugin
 import xyz.aeolia.lib.data.LibBlock
 import xyz.aeolia.lib.data.User
-import xyz.aeolia.lib.manager.UserManager
 import xyz.aeolia.lib.sender.MessageSender
 import xyz.aeolia.lib.user
 import xyz.aeolia.lib.utils.Message
