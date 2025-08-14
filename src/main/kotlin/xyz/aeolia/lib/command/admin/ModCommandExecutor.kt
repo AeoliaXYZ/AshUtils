@@ -5,7 +5,6 @@ import org.bukkit.Bukkit
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
-import xyz.aeolia.lib.manager.UserManager.getUser
 import xyz.aeolia.lib.player
 import xyz.aeolia.lib.sender.MessageSender.sendMessage
 import xyz.aeolia.lib.user
