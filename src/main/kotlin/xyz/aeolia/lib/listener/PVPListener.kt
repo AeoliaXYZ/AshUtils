@@ -17,6 +17,7 @@ import xyz.aeolia.lib.data.LibBlock
 import xyz.aeolia.lib.data.User
 import xyz.aeolia.lib.manager.UserManager
 import xyz.aeolia.lib.sender.MessageSender
+import xyz.aeolia.lib.user
 import xyz.aeolia.lib.utils.Message
 
 class PVPListener(val plugin: JavaPlugin) : Listener {
@@ -25,7 +26,7 @@ class PVPListener(val plugin: JavaPlugin) : Listener {
   @EventHandler(priority = EventPriority.NORMAL)
   fun onPlayerQuit(event: PlayerQuitEvent) {
     playersWarned.remove(event.player)
-    clearBlocks(UserManager.getUser(event.player))
+    clearBlocks(event.player.user())
   }
 
   @EventHandler(priority = EventPriority.LOWEST)
@@ -57,7 +58,7 @@ class PVPListener(val plugin: JavaPlugin) : Listener {
     val player = event.player
     val from = event.from
     if (from.name == plugin.config.getString("pvp.world")) return
-    clearBlocks(UserManager.getUser(player))
+    clearBlocks(player.user())
   }
 
   @EventHandler(priority = EventPriority.LOWEST)
@@ -65,7 +66,7 @@ class PVPListener(val plugin: JavaPlugin) : Listener {
     val player = event.player
     val world = player.world
     if (world.name == plugin.config.getString("pvp.world")) return
-    clearBlocks(UserManager.getUser(player))
+    clearBlocks(player.user())
   }
 
   companion object {
@@ -87,7 +88,7 @@ class PVPListener(val plugin: JavaPlugin) : Listener {
       val world = player.location.world
       if (world.name != plugin.config.getString("pvp.world")) return null
       if (cancelled) return null
-      return UserManager.getUser(player)
+      return player.user()
     }
 
     fun tpPlayerToArena(player: Player, plugin: JavaPlugin) {

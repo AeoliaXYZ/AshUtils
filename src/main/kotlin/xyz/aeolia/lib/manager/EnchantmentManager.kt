@@ -84,9 +84,7 @@ object EnchantmentManager {
   }
 
   fun conflicts(enchantToAdd: Enchantment, item: ItemStack): Boolean {
-    item.enchantments.forEach {
-      if (it.key.conflictsWith(enchantToAdd)) return true
-    }
+    item.enchantments.forEach { if (it.key.conflictsWith(enchantToAdd)) return true }
     return false
   }
 
@@ -102,7 +100,7 @@ object EnchantmentManager {
   Returns the price of the item or an error code.
    */
   fun addAndDebit(enchantment: Enchantment, level: Int, item: ItemStack, player: Player): Pair<EnchantResult, Int> {
-    val econ = EconManager.econ ?: return EnchantResult.MISSING_DEPENDENCY to 0
+    val econ = EconManager.econ ?: return EnchantResult.MISSING_DEPEND to 0
     val enchantmentValue = enchantments.getOrElse(enchantment) {
       plugin.logger.severe("Unrecognised enchantment $enchantment!")
       return EnchantResult.INVALID_ENCHANTMENT to 0

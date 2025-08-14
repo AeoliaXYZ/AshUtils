@@ -11,6 +11,7 @@ import xyz.aeolia.lib.listener.PVPListener
 import xyz.aeolia.lib.manager.KitManager
 import xyz.aeolia.lib.manager.UserManager
 import xyz.aeolia.lib.sender.MessageSender
+import xyz.aeolia.lib.user
 import java.io.File
 import kotlin.math.ceil
 
@@ -37,7 +38,7 @@ open class PVPMenu(open val plugin: JavaPlugin) : InventoryProvider {
       }
       if (condition) contents.add(ClickableItem.of(displayItem) { e ->
         e.isCancelled = true
-        PVPListener.clearBlocks(UserManager.getUser(player))
+        PVPListener.clearBlocks(player.user())
         PVPListener.tpPlayerToArena(player, plugin)
         KitManager.givePlayerKit(player, kit.value)
         MessageSender.sendMessage(player, "Equipped kit ${kit.value.displayName}!")

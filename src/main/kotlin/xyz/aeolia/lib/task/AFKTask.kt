@@ -12,7 +12,7 @@ import java.util.*
 class AFKTask(val event: AfkStatusChangeEvent, val plugin: JavaPlugin) : BukkitRunnable() {
   override fun run() {
     val player = event.getAffected().base
-    if (getUser(player).vanish) return
+    if (player.user().vanish) return
     if (!player.isOnline) return
     val clean = event.affected.displayName.replace("§.".toRegex(), "")
     val uri: URI

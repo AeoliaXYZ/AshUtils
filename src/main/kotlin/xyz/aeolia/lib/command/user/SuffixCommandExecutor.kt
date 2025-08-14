@@ -104,9 +104,9 @@ class SuffixCommandExecutor(var plugin: JavaPlugin) : TabExecutor {
   override fun onTabComplete(
     sender: CommandSender, command: Command,
     label: String, args: Array<String>
-  ): MutableList<String?>? {
-    val completions: MutableList<String> = ArrayList<String>()
-    val commands: MutableList<String> = ArrayList<String>()
+  ): MutableList<String> {
+    val completions: MutableList<String> = ArrayList()
+    val commands: MutableList<String> = ArrayList()
 
     if (!sender.hasPermission("lib.suffix-grant")) return mutableListOf()
 
@@ -126,14 +126,7 @@ class SuffixCommandExecutor(var plugin: JavaPlugin) : TabExecutor {
         StringUtil.copyPartialMatches<MutableList<String>>(args[2], commands, completions)
       }
     }
-    val returner: MutableList<String?>?
     completions.sort()
-    if (completions.isEmpty()) {
-      returner = null
-    } else {
-      @Suppress("UNCHECKED_CAST")
-      returner = completions as MutableList<String?>?
-    }
-    return returner
+    return completions
   }
 }

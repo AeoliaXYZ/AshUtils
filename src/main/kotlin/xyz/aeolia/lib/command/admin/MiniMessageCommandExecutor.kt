@@ -12,6 +12,7 @@ import xyz.aeolia.lib.manager.UserMapManager
 import xyz.aeolia.lib.miniMessage
 import xyz.aeolia.lib.player
 import xyz.aeolia.lib.sender.MessageSender
+import xyz.aeolia.lib.user
 import xyz.aeolia.lib.utils.Message.Error.CONFIG
 import xyz.aeolia.lib.utils.Message.Generic.COMMAND_USAGE
 import xyz.aeolia.lib.utils.Message.Player.NOT_FOUND
@@ -38,7 +39,7 @@ class MiniMessageCommandExecutor(val plugin: JavaPlugin) : CommandExecutor {
         MessageSender.sendMessage(sender, NOT_FOUND, true)
         return false
       }
-      val user = UserManager.getUser(Bukkit.getOfflinePlayer(uuid))
+      val user = Bukkit.getOfflinePlayer(uuid).user()
       if (user.online) {
         identity = Bukkit.getPlayer(uuid) ?: run {
           MessageSender.sendMessage(sender, OFFLINE, true)

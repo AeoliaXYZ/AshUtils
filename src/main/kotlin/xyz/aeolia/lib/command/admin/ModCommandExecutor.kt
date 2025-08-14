@@ -8,13 +8,14 @@ import org.bukkit.command.CommandSender
 import xyz.aeolia.lib.manager.UserManager.getUser
 import xyz.aeolia.lib.player
 import xyz.aeolia.lib.sender.MessageSender.sendMessage
+import xyz.aeolia.lib.user
 import xyz.aeolia.lib.utils.Message.Error.MISSING_DEPEND
 import xyz.aeolia.lib.utils.Message.Generic.COMMAND_USAGE
 
 class ModCommandExecutor : CommandExecutor {
   override fun onCommand(senderIn: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
     val sender = senderIn.player() ?: return true
-    val user = getUser(sender)
+    val user = sender.user()
     val toSet: Boolean
     if (args.isEmpty()) {
       toSet = !user.modMode

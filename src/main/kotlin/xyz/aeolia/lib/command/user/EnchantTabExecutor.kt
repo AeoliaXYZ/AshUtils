@@ -54,8 +54,10 @@ class EnchantTabExecutor(val plugin: JavaPlugin) : TabExecutor {
       return true.also { MessageSender.sendMessage(sender, "That enchantment was not found!") }
     }
 
+    val enchantPrices = EnchantmentManager.enchantments[enchant]!!
+
     if (args.size == 1) {
-      val maxLevel = EnchantmentManager.enchantments[enchant]!!.size
+      val maxLevel = enchantPrices.size
       args.add(maxLevel.toString())
     }
 
@@ -64,7 +66,7 @@ class EnchantTabExecutor(val plugin: JavaPlugin) : TabExecutor {
     if(args[1] == "price") {
       var i = 1
       var message = "<aqua>Prices for ${args[0]}:</aqua>"
-      EnchantmentManager.enchantments[enchant]!!.forEach {
+      enchantPrices.forEach {
         message += "\n$i: $currencySymbol$it"
         i++
       }
@@ -85,7 +87,7 @@ class EnchantTabExecutor(val plugin: JavaPlugin) : TabExecutor {
       EnchantResult.INCOMPATIBLE_ENCHANTMENT -> "That enchantment is not compatible with this item."
       EnchantResult.INVALID_ENCHANTMENT -> "That enchantment was not found!"
       EnchantResult.INSUFFICIENT_FUNDS -> "You don't have enough money to purchase that enchantment."
-      EnchantResult.MISSING_DEPENDENCY -> Message.Error.MISSING_DEPEND.format("Economy")
+      EnchantResult.MISSING_DEPEND -> Message.Error.MISSING_DEPEND.format("Economy")
     }
     return true.also { MessageSender.sendMessage(sender, message) }
   }

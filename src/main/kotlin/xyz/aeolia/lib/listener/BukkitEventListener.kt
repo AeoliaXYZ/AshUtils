@@ -18,6 +18,7 @@ import xyz.aeolia.lib.sender.MessageSender
 import xyz.aeolia.lib.task.MessageLaterTask
 import xyz.aeolia.lib.task.ROEQuitTask
 import xyz.aeolia.lib.task.UserPruneTask
+import xyz.aeolia.lib.user
 import java.util.regex.Pattern
 
 class BukkitEventListener(private val plugin: JavaPlugin) : Listener {
@@ -26,7 +27,7 @@ class BukkitEventListener(private val plugin: JavaPlugin) : Listener {
 
   @EventHandler(priority = EventPriority.LOWEST)
   fun onPlayerQuit(event: PlayerQuitEvent) {
-    UserManager.getUser(event.player).online = false
+    event.player.user().online = false
     ROEQuitTask(this.plugin).runTaskLater(this.plugin, 3)
     UserPruneTask(event.player, plugin).runTaskLater(this.plugin, plugin.config.getLong("prune-time"))
   }
@@ -60,7 +61,7 @@ class BukkitEventListener(private val plugin: JavaPlugin) : Listener {
     }
     UserMapManager.putUserInMap(player.name, player.uniqueId)
 
-    val user = UserManager.getUser(player)
+    val user = player.user()
     user.online = true
     user.vanish = ess.getUser(player).isVanished
 
