@@ -34,7 +34,7 @@ object UserManager {
 
   @JvmStatic
   @JvmOverloads
-  fun getUser(player: OfflinePlayer, recurse: Boolean = false): User {
+  fun getUser(player: OfflinePlayer, retain: Boolean = true): User {
     val uuid = player.uniqueId
     users[uuid]?.let { return it }
 
@@ -52,7 +52,7 @@ object UserManager {
     } ?: run { return User() }
     putUser(user)
 
-    if (!user.online && !recurse) {
+    if (!user.online && retain) {
       UserPruneTask(player, plugin).runTaskLater(plugin, plugin.config.getLong("prune-time"))
     }
 
@@ -67,7 +67,7 @@ object UserManager {
   @JvmStatic
   fun removeUser(player: OfflinePlayer) {
     val uuid = player.uniqueId
-    saveUser(getUser(player, true)) // save user to prevent data loss from prune
+    saveUser(getUser(player, false)) // save user to prevent data loss from prune
     users.remove(uuid)
   }
 
