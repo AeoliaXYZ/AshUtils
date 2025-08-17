@@ -72,10 +72,8 @@ object UserMapManager {
 
   @JvmStatic
   fun saveUserMap() {
-    if (userMap.isEmpty()) {
-      return  // Prevent userMap from overwriting if the plugin crashes on startup
-    }
-    if (!modified) return // No point saving if nothing's changed
+    if (userMap.isEmpty()) return  // Prevent userMap from overwriting if the plugin crashes on startup
+    if (!modified) return
     CompletableFuture.runAsync {
       try {
         FileWriter(filePath).use { writer ->
@@ -84,11 +82,12 @@ object UserMapManager {
       } catch (e: IOException) {
         throw CompletionException(e)
       }
+
     }.thenRun {
       plugin.logger.info("Saved users.json with " + userMap.size + " values!")
       modified = false
-    }
-      .exceptionally(Function { t: Throwable ->
+
+    }.exceptionally(Function { t: Throwable ->
         plugin.logger.severe("Failed to save users.json! Dumping it to console. Reason: " + t.message)
         plugin.logger.severe("StackTrace: " + t.stackTrace.contentToString())
         plugin.logger.severe("users.json: " + gson.toJson(userMap))
