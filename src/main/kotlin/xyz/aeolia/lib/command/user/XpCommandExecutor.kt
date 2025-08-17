@@ -44,8 +44,8 @@ class XpCommandExecutor(var plugin: JavaPlugin) : CommandExecutor {
     val experience = Experience(sender)
 
     when (command.name.lowercase()) {
-      "xpbuy" -> return buyXp(sender, args[0], experience, experience.getTotalExperience())
-      "xpsell" -> return sellXp(sender, args[0], experience, experience.getTotalExperience())
+      "xpbuy" -> return buyXp(sender, args[0], experience, experience.totalExperience)
+      "xpsell" -> return sellXp(sender, args[0], experience, experience.totalExperience)
       else -> {
         plugin.logger.severe("Command ${command.name} not found in XpCommandExecutor! This is a bug.")
         MessageSender.sendMessage(sender, GENERIC, true)
