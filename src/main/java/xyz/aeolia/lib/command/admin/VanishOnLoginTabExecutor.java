@@ -98,7 +98,7 @@ public class VanishOnLoginTabExecutor implements TabExecutor {
   }
 
   boolean permissionUpdate(CommandSender sender, UUID uuid, String playerName, boolean status) {
-    PermissionManager.groupUpdate(plugin, uuid, plugin.getConfig().getString("vanish-on-login-group"), status);
+    PermissionManager.groupUpdate(plugin, uuid, plugin.getConfig().getString("vanish-on-login-group", ""), status);
     String toSend = "VanishOnLogin " + (status ? "enabled" : "disabled") + " for " + playerName + ".";
     MessageSender.sendMessage(sender, toSend, true);
     return true;
