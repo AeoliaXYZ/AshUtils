@@ -83,20 +83,17 @@ object UserManager {
     } catch (e: IOException) {
       throw RuntimeException(e)
     }
+
   }
 
   @JvmStatic
   fun saveUsers() {
-    CompletableFuture.runAsync {
-      saveUsersBlocking()
-    }
+    CompletableFuture.runAsync { saveUsersBlocking() }
   }
 
   fun saveUsersBlocking() {
-    if (users.isEmpty()) {
-      return
-    }
+    if (users.isEmpty()) return
     users.values.forEach { saveUser(it) }
-    plugin.logger.info("Saved " + users.size + " users!")
+    plugin.logger.info("Saved ${users.size} users!")
   }
 }
