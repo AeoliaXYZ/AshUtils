@@ -61,7 +61,7 @@ dependencies {
 }
 
 group = "xyz.aeolia"
-version = "2.1.8"
+version = "2.1.9"
 description = "AeoliaLib"
 java.sourceCompatibility = JavaVersion.VERSION_21
 
@@ -102,13 +102,13 @@ tasks.withType<Javadoc> {
 tasks.shadowJar {
     dependencies {
         include(dependency("cymru.asheiou:configmanager"))
+        include(dependency("org.jetbrains.kotlin:"))
         include(dependency("org.jetbrains.kotlinx:"))
         include(dependency("org.apache.commons:commons-lang3"))
         include(dependency("org.apache.commons:commons-text"))
         exclude(dependency("org.jetbrains.kotlin:kotlin-serialization-compiler-plugin"))
     }
 
-    relocate("kotlinx", "xyz.aeolia.lib.shade.kotlinx")
     relocate("cymru.asheiou.configmanager", "xyz.aeolia.lib.shade.configmanager")
     relocate("org.apache.commons.lang3", "xyz.aeolia.lib.shade.lang")
     relocate("org.apache.commons.text", "xyz.aeolia.lib.shade.text")
