@@ -26,6 +26,13 @@ open class AeoliaLib : JavaPlugin() {
     val pm = server.pluginManager
     val notEnabled = NotEnabledCommandExecutor()
     // Dependency check
+    try {
+      Class.forName("kotlin.Unit")
+      logger.info("Kotlin stdlib found!")
+    } catch (_: ClassNotFoundException) {
+      logger.info("Kotlin stdlib not found! Disabling plugin...")
+      pm.disablePlugin(this)
+    }
     if (pm.getPlugin("Essentials") == null) {
       logger.info("No Essentials found!")
       pm.disablePlugin(this)

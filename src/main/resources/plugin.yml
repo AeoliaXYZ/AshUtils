@@ -9,6 +9,7 @@ softdepend:
 - SmartInvs
 depend:
 - Essentials
+- KotKit
 website: https://asheiou.cymru
 description: "> The Aeolia bespoke everything-plugin!"
 commands:

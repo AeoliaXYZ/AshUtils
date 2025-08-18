@@ -22,7 +22,7 @@ import java.util.regex.Pattern
 
 class BukkitEventListener(private val plugin: JavaPlugin) : Listener {
   private val pattern: Pattern = Pattern.compile("^:[A-Z]{4,}$")
-  private val ess: Essentials = Bukkit.getPluginManager().getPlugin("Essentials") as Essentials
+  private val ess: Essentials? = Bukkit.getPluginManager().getPlugin("Essentials") as? Essentials
 
   @EventHandler(priority = EventPriority.LOWEST)
   fun onPlayerQuit(event: PlayerQuitEvent) {
@@ -62,7 +62,7 @@ class BukkitEventListener(private val plugin: JavaPlugin) : Listener {
 
     val user = player.user()
     user.online = true
-    user.vanish = ess.getUser(player).isVanished
+    user.vanish = ess!!.getUser(player).isVanished
 
     if (MotdHandler.motd != null) {
       // Send MOTD if it exists
