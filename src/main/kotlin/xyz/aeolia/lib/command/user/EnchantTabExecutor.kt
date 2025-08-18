@@ -4,15 +4,13 @@ import org.bukkit.Material
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 import org.bukkit.command.TabExecutor
-import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.util.StringUtil
 import xyz.aeolia.lib.data.EnchantResult
 import xyz.aeolia.lib.manager.EnchantmentManager
+import xyz.aeolia.lib.player
 import xyz.aeolia.lib.sender.MessageSender
 import xyz.aeolia.lib.utils.Message
-import java.util.*
-import kotlin.collections.sort
 
 class EnchantTabExecutor(val plugin: JavaPlugin) : TabExecutor {
   override fun onTabComplete(
@@ -43,21 +41,23 @@ class EnchantTabExecutor(val plugin: JavaPlugin) : TabExecutor {
   }
 
   override fun onCommand(
-    sender: CommandSender,
+    senderIn: CommandSender,
     command: Command,
     label: String,
     argsIn: Array<out String>
   ): Boolean {
     val args = mutableListOf<String>()
     args.addAll(argsIn)
-    if(sender !is Player) return true.also { MessageSender.sendMessage(sender, Message.Generic.NOT_PLAYER) }
+    val sender = senderIn.player() ?: return true
     if(args.isEmpty() || args.size > 2) return false.also { MessageSender.sendMessage(sender, Message.Generic.COMMAND_USAGE) }
     val enchant = EnchantmentManager.nameToEnchant(args[0]) ?: run {
       return true.also { MessageSender.sendMessage(sender, "That enchantment was not found!") }
     }
 
+    val enchantPrices = EnchantmentManager.enchantments[enchant]!!
+
     if (args.size == 1) {
-      val maxLevel = EnchantmentManager.enchantments[enchant]!!.size
+      val maxLevel = enchantPrices.size
       args.add(maxLevel.toString())
     }
 
@@ -66,7 +66,7 @@ class EnchantTabExecutor(val plugin: JavaPlugin) : TabExecutor {
     if(args[1] == "price") {
       var i = 1
       var message = "<aqua>Prices for ${args[0]}:</aqua>"
-      EnchantmentManager.enchantments[enchant]!!.forEach {
+      enchantPrices.forEach {
         message += "\n$i: $currencySymbol$it"
         i++
       }
@@ -87,7 +87,7 @@ class EnchantTabExecutor(val plugin: JavaPlugin) : TabExecutor {
       EnchantResult.INCOMPATIBLE_ENCHANTMENT -> "That enchantment is not compatible with this item."
       EnchantResult.INVALID_ENCHANTMENT -> "That enchantment was not found!"
       EnchantResult.INSUFFICIENT_FUNDS -> "You don't have enough money to purchase that enchantment."
-      EnchantResult.MISSING_DEPENDENCY -> Message.Error.MISSING_DEPEND.format("Economy")
+      EnchantResult.MISSING_DEPEND -> Message.Error.MISSING_DEPEND.format("Economy")
     }
     return true.also { MessageSender.sendMessage(sender, message) }
   }

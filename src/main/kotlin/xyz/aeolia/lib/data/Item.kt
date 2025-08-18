@@ -6,6 +6,7 @@ import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import xyz.aeolia.lib.manager.EnchantmentManager
+import xyz.aeolia.lib.miniMessage
 import xyz.aeolia.lib.sender.MessageSender
 
 @Serializable
@@ -37,8 +38,6 @@ class Item(
   }
 
   fun loadStack(): ItemStack? {
-    val mm = MessageSender.miniMessage
-
     val material = try {
       Material.getMaterial(materialUpper)
         ?: throw Throwable("Material ${this.materialUpper} not found")
@@ -55,13 +54,13 @@ class Item(
     val meta = stack.itemMeta!!
 
     this.displayName?.let {
-      meta.displayName(mm.deserialize(it))
+      meta.displayName(it.miniMessage())
     }
 
     this.lore?.let {
       val lore = mutableListOf<Component>()
       it.forEach { line ->
-        lore.add(mm.deserialize(line))
+        lore.add(line.miniMessage())
       }
       meta.lore(lore)
     }

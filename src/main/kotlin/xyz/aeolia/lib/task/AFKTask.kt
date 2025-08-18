@@ -3,8 +3,8 @@ package xyz.aeolia.lib.task
 import net.ess3.api.events.AfkStatusChangeEvent
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitRunnable
-import xyz.aeolia.lib.manager.UserManager.getUser
 import xyz.aeolia.lib.sender.WebhookSender.Companion.postWebhook
+import xyz.aeolia.lib.user
 import java.net.URI
 import java.net.URISyntaxException
 import java.util.*
@@ -12,7 +12,7 @@ import java.util.*
 class AFKTask(val event: AfkStatusChangeEvent, val plugin: JavaPlugin) : BukkitRunnable() {
   override fun run() {
     val player = event.getAffected().base
-    if (getUser(player).vanish) return
+    if (player.user().vanish) return
     if (!player.isOnline) return
     val clean = event.affected.displayName.replace("§.".toRegex(), "")
     val uri: URI

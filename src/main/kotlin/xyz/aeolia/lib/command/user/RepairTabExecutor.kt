@@ -5,18 +5,18 @@ import org.bukkit.Material
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 import org.bukkit.command.TabExecutor
-import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.Damageable
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.util.StringUtil
 import xyz.aeolia.lib.manager.EconManager
 import xyz.aeolia.lib.manager.RepairerManager
+import xyz.aeolia.lib.player
 import xyz.aeolia.lib.sender.MessageSender.sendMessage
 import xyz.aeolia.lib.utils.Message
 
 class RepairTabExecutor(val plugin: JavaPlugin) : TabExecutor {
-  val econ: Economy? = EconManager.econ
+  private val econ: Economy? = EconManager.econ
 
   override fun onTabComplete(
     sender: CommandSender,
@@ -32,12 +32,12 @@ class RepairTabExecutor(val plugin: JavaPlugin) : TabExecutor {
   }
 
   override fun onCommand(
-    sender: CommandSender,
+    senderIn: CommandSender,
     command: Command,
     label: String,
     args: Array<out String>
   ): Boolean {
-    if (sender !is Player) return true.also { sendMessage(sender, Message.Generic.NOT_PLAYER) }
+    val sender = senderIn.player() ?: return true
 
     var itemsRepaired = 0
     val itemsToRepair: MutableList<ItemStack> = ArrayList()

@@ -34,7 +34,7 @@ object UserManager {
 
   @JvmStatic
   @JvmOverloads
-  fun getUser(player: OfflinePlayer, recurse: Boolean = false): User {
+  fun getUser(player: OfflinePlayer, retain: Boolean = true): User {
     val uuid = player.uniqueId
     users[uuid]?.let { return it }
 
@@ -52,7 +52,7 @@ object UserManager {
     } ?: run { return User() }
     putUser(user)
 
-    if (!user.online && !recurse) {
+    if (!user.online && retain) {
       UserPruneTask(player, plugin).runTaskLater(plugin, plugin.config.getLong("prune-time"))
     }
 
@@ -67,11 +67,12 @@ object UserManager {
   @JvmStatic
   fun removeUser(player: OfflinePlayer) {
     val uuid = player.uniqueId
-    saveUser(getUser(player, true)) // save user to prevent data loss from prune
+    saveUser(getUser(player, false)) // save user to prevent data loss from prune
     users.remove(uuid)
   }
 
   @JvmStatic
+  @Synchronized
   fun saveUser(user: User) {
     if (user.uuid == null) return // Prevent data loss from saving malformed users
     val file = File(folder, user.uuid.toString() + ".json")
@@ -83,20 +84,17 @@ object UserManager {
     } catch (e: IOException) {
       throw RuntimeException(e)
     }
+
   }
 
   @JvmStatic
   fun saveUsers() {
-    CompletableFuture.runAsync {
-      saveUsersBlocking()
-    }
+    CompletableFuture.runAsync { saveUsersBlocking() }
   }
 
   fun saveUsersBlocking() {
-    if (users.isEmpty()) {
-      return
-    }
+    if (users.isEmpty()) return
     users.values.forEach { saveUser(it) }
-    plugin.logger.info("Saved " + users.size + " users!")
+    plugin.logger.info("Saved ${users.size} users!")
   }
 }

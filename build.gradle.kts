@@ -40,7 +40,7 @@ dependencies {
     implementation("org.apache.commons:commons-lang3:3.18.0")
     implementation("org.apache.commons:commons-text:1.1")
     implementation(libs.cymru.asheiou.configmanager)
-    implementation(libs.org.jetbrains.kotlin.kotlin.stdlib.jdk8)
+    compileOnly(libs.org.jetbrains.kotlin.kotlin.stdlib.jdk8)
     implementation(libs.org.jetbrains.kotlinx.kotlinx.coroutines.core.jvm)
     implementation(libs.org.jetbrains.kotlinx.kotlinx.serialization.json.jvm)
     implementation(libs.org.jetbrains.kotlin.kotlin.serialization.compiler.plugin)
@@ -61,7 +61,7 @@ dependencies {
 }
 
 group = "xyz.aeolia"
-version = "2.1.6"
+version = "2.1.8"
 description = "AeoliaLib"
 java.sourceCompatibility = JavaVersion.VERSION_21
 
@@ -102,14 +102,12 @@ tasks.withType<Javadoc> {
 tasks.shadowJar {
     dependencies {
         include(dependency("cymru.asheiou:configmanager"))
-        include(dependency("org.jetbrains.kotlin:"))
         include(dependency("org.jetbrains.kotlinx:"))
         include(dependency("org.apache.commons:commons-lang3"))
         include(dependency("org.apache.commons:commons-text"))
         exclude(dependency("org.jetbrains.kotlin:kotlin-serialization-compiler-plugin"))
     }
 
-    relocate("kotlin", "xyz.aeolia.lib.shade.kotlin")
     relocate("kotlinx", "xyz.aeolia.lib.shade.kotlinx")
     relocate("cymru.asheiou.configmanager", "xyz.aeolia.lib.shade.configmanager")
     relocate("org.apache.commons.lang3", "xyz.aeolia.lib.shade.lang")

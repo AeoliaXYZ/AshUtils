@@ -10,12 +10,11 @@ import org.bukkit.command.TabExecutor
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.util.StringUtil
-import xyz.aeolia.lib.utils.Message
 import xyz.aeolia.lib.manager.PermissionManager
 import xyz.aeolia.lib.manager.UserMapManager
 import xyz.aeolia.lib.menu.SuffixMenu
 import xyz.aeolia.lib.sender.MessageSender
-import java.util.*
+import xyz.aeolia.lib.utils.Message
 import java.util.function.Consumer
 
 class SuffixCommandExecutor(var plugin: JavaPlugin) : TabExecutor {
@@ -25,7 +24,7 @@ class SuffixCommandExecutor(var plugin: JavaPlugin) : TabExecutor {
   ): Boolean {
     if (args.isEmpty()) {
       if (sender is Player) {
-        SuffixMenu(plugin).INVENTORY.open(sender)
+        SuffixMenu(plugin).inventory.open(sender)
         return true
       } else {
         MessageSender.sendMessage(sender, "This command can only be executed by a player without an argument.")
@@ -33,7 +32,7 @@ class SuffixCommandExecutor(var plugin: JavaPlugin) : TabExecutor {
       }
     }
     if (!sender.hasPermission("lib.suffix-grant")) {
-      if (sender is Player) SuffixMenu(plugin).INVENTORY.open(sender)
+      if (sender is Player) SuffixMenu(plugin).inventory.open(sender)
       return true
     }
 
@@ -42,7 +41,7 @@ class SuffixCommandExecutor(var plugin: JavaPlugin) : TabExecutor {
     if (args[0] == "create") {
       if (!sender.hasPermission("lib.suffix-create")) return true
       val formatted = SuffixMenu.formatSuffix(args[1], true)
-      PermissionManager.api.groupManager.createAndLoadGroup(args[1])
+      PermissionManager.api!!.groupManager.createAndLoadGroup(args[1])
         .thenAccept(Consumer { e: Group ->
           val formattedAmpersand = SuffixMenu.formatSuffix(args[1], false)
           val node: Node = SuffixNode.builder()
@@ -50,7 +49,7 @@ class SuffixCommandExecutor(var plugin: JavaPlugin) : TabExecutor {
             .suffix(" $formattedAmpersand")
             .build()
           e.data().add(node)
-          PermissionManager.api.groupManager.saveGroup(e)
+          PermissionManager.api!!.groupManager.saveGroup(e)
           if (!suffixList.contains(args[1])) {
             plugin.config.set("suffix.list", suffixList)
             plugin.saveConfig()
@@ -63,11 +62,11 @@ class SuffixCommandExecutor(var plugin: JavaPlugin) : TabExecutor {
         }
       return true
     }
-    if (args.size != 3) return invEx(sender)
+    if (args.size != 3) return invalidExecution(sender)
     val status: Boolean = when (args[0]) {
       "grant" -> true
       "revoke" -> false
-      else -> return invEx(sender)
+      else -> return invalidExecution(sender)
     }
     val uuid = UserMapManager.getUuidFromName(args[1])
     if (uuid == null) {
@@ -96,8 +95,7 @@ class SuffixCommandExecutor(var plugin: JavaPlugin) : TabExecutor {
     return true
   }
 
-  fun invEx(sender: CommandSender): Boolean {
-    // Short for invalid execution
+  fun invalidExecution(sender: CommandSender): Boolean {
     MessageSender.sendMessage(sender, Message.Generic.COMMAND_USAGE)
     MessageSender.sendMessage(sender, "/suffix [grant/revoke] <user> <suffix>", false)
     return true
@@ -106,9 +104,9 @@ class SuffixCommandExecutor(var plugin: JavaPlugin) : TabExecutor {
   override fun onTabComplete(
     sender: CommandSender, command: Command,
     label: String, args: Array<String>
-  ): MutableList<String?>? {
-    val completions: MutableList<String> = ArrayList<String>()
-    val commands: MutableList<String> = ArrayList<String>()
+  ): MutableList<String> {
+    val completions: MutableList<String> = ArrayList()
+    val commands: MutableList<String> = ArrayList()
 
     if (!sender.hasPermission("lib.suffix-grant")) return mutableListOf()
 
@@ -128,14 +126,7 @@ class SuffixCommandExecutor(var plugin: JavaPlugin) : TabExecutor {
         StringUtil.copyPartialMatches<MutableList<String>>(args[2], commands, completions)
       }
     }
-    val returner: MutableList<String?>?
     completions.sort()
-    if (completions.isEmpty()) {
-      returner = null
-    } else {
-      @Suppress("UNCHECKED_CAST")
-      returner = completions as MutableList<String?>?
-    }
-    return returner
+    return completions
   }
 }

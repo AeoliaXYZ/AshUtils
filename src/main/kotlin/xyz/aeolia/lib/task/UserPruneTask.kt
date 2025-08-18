@@ -7,7 +7,7 @@ import xyz.aeolia.lib.manager.UserManager
 
 class UserPruneTask(val player: OfflinePlayer, val plugin: JavaPlugin) : BukkitRunnable() {
   override fun run() {
-    if (UserManager.getUser(player, true).online) return
+    if (UserManager.getUser(player, false).online) return
     UserManager.removeUser(player)
     plugin.logger.info("[AeoliaLib] Pruned user ${player.name}")
   }

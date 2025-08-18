@@ -6,34 +6,19 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.TabExecutor
 import org.bukkit.plugin.java.JavaPlugin
 import xyz.aeolia.lib.command.NotEnabledCommandExecutor
-import xyz.aeolia.lib.command.user.PVPCommandExecutor
-import xyz.aeolia.lib.command.admin.BroadcastCommandExecutor
-import xyz.aeolia.lib.command.admin.FakeTabExecutor
-import xyz.aeolia.lib.command.admin.MiniMessageCommandExecutor
-import xyz.aeolia.lib.command.admin.ModCommandExecutor
-import xyz.aeolia.lib.command.admin.VanishOnLoginTabExecutor
+import xyz.aeolia.lib.command.admin.*
 import xyz.aeolia.lib.command.admin.util.UtilTabExecutor
 import xyz.aeolia.lib.command.user.*
-import xyz.aeolia.lib.listener.BukkitEventListener
-import xyz.aeolia.lib.listener.EssEventListener
-import xyz.aeolia.lib.listener.MineListener
-import xyz.aeolia.lib.listener.PVPListener
-import xyz.aeolia.lib.listener.SuffixListener
-import xyz.aeolia.lib.listener.VaultListener
-import xyz.aeolia.lib.manager.EconManager
-import xyz.aeolia.lib.manager.EnchantmentManager
-import xyz.aeolia.lib.manager.KitManager
-import xyz.aeolia.lib.manager.PermissionManager
-import xyz.aeolia.lib.manager.StatusManager
-import xyz.aeolia.lib.manager.UserMapManager
+import xyz.aeolia.lib.listener.*
+import xyz.aeolia.lib.manager.*
 import xyz.aeolia.lib.sender.MessageSender
-import xyz.aeolia.lib.manager.UserManager
 import xyz.aeolia.lib.sender.WebhookSender
 import java.time.Duration
 import java.time.Instant
 
 open class AeoliaLib : JavaPlugin() {
   val configManager = ConfigManager(this, true)
+  var registeredCommands = 0
 
   override fun onEnable() {
     logger.info("Started load...")
@@ -110,7 +95,7 @@ open class AeoliaLib : JavaPlugin() {
     for (command in commands) {
       setExecutor(command.key, command.value)
     }
-    logger.info("Commands registered!")
+    logger.info("Commands registered: $registeredCommands")
     // Toggle
     StatusManager.setStatus("restartonempty", false)
     StatusManager.setStatus("lockchat", false)
@@ -120,6 +105,7 @@ open class AeoliaLib : JavaPlugin() {
 
 
   override fun onDisable() {
+    Bukkit.getScheduler().cancelTasks(this)
     UserMapManager.saveUserMap()
     UserManager.saveUsersBlocking()
     KitManager.cleanup()
@@ -130,11 +116,14 @@ open class AeoliaLib : JavaPlugin() {
     UserManager.saveUsers()
   }
 
-  fun setExecutor(command: String, executor: CommandExecutor?) {
+  fun setExecutor(command: String, executor: CommandExecutor) {
     try {
-      this.getCommand(command)?.setExecutor(executor)
-      if (executor is TabExecutor) {
-        this.getCommand(command)?.tabCompleter = executor
+      this.getCommand(command)?.apply {
+        setExecutor(executor)
+        registeredCommands++
+        if (executor is TabExecutor) {
+          tabCompleter = executor
+        }
       }
     } catch (_: NullPointerException) {
       this.logger.warning("$command is not registered in the plugin.yml. Check your build.")

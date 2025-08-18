@@ -5,20 +5,16 @@ import org.bukkit.Bukkit
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
-import org.bukkit.entity.Player
-import xyz.aeolia.lib.manager.UserManager.getUser
+import xyz.aeolia.lib.player
 import xyz.aeolia.lib.sender.MessageSender.sendMessage
+import xyz.aeolia.lib.user
 import xyz.aeolia.lib.utils.Message.Error.MISSING_DEPEND
 import xyz.aeolia.lib.utils.Message.Generic.COMMAND_USAGE
-import xyz.aeolia.lib.utils.Message.Generic.NOT_PLAYER
 
 class ModCommandExecutor : CommandExecutor {
-  override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
-    if (sender !is Player) {
-      sendMessage(sender, NOT_PLAYER, true)
-      return true
-    }
-    val user = getUser(sender)
+  override fun onCommand(senderIn: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
+    val sender = senderIn.player() ?: return true
+    val user = sender.user()
     val toSet: Boolean
     if (args.isEmpty()) {
       toSet = !user.modMode

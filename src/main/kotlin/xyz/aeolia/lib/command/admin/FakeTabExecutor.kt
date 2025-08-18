@@ -7,10 +7,10 @@ import org.bukkit.command.TabExecutor
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.util.StringUtil
+import xyz.aeolia.lib.miniMessage
 import xyz.aeolia.lib.sender.MessageSender
 import xyz.aeolia.lib.utils.Message.Generic.COMMAND_USAGE
 import xyz.aeolia.lib.utils.Message.Generic.NOT_PLAYER_ARGS
-import java.util.*
 
 class FakeTabExecutor(private val plugin: JavaPlugin) : TabExecutor {
   override fun onCommand(
@@ -46,7 +46,7 @@ class FakeTabExecutor(private val plugin: JavaPlugin) : TabExecutor {
         return false
       }
     }
-    val deserialized = MessageSender.miniMessage.deserialize(message)
+    val deserialized = message.miniMessage()
     Bukkit.getServer().broadcast(deserialized)
     return true
   }
@@ -57,8 +57,8 @@ class FakeTabExecutor(private val plugin: JavaPlugin) : TabExecutor {
     label: String,
     args: Array<String>
   ): MutableList<String> {
-    val completions: MutableList<String> = ArrayList<String>()
-    val commands: MutableList<String> = ArrayList<String>()
+    val completions: MutableList<String> = mutableListOf()
+    val commands: MutableList<String> = mutableListOf()
 
     if (args.size == 1) {
       if (sender.hasPermission("lib.fake")) {

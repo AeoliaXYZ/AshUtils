@@ -8,10 +8,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-import xyz.aeolia.lib.manager.EconManager;
-import xyz.aeolia.lib.sender.MessageSender;
 import xyz.aeolia.lib.data.User;
+import xyz.aeolia.lib.manager.EconManager;
 import xyz.aeolia.lib.manager.UserManager;
+import xyz.aeolia.lib.sender.MessageSender;
 
 import java.util.Objects;
 
