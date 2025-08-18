@@ -105,6 +105,7 @@ open class AeoliaLib : JavaPlugin() {
 
 
   override fun onDisable() {
+    Bukkit.getScheduler().cancelTasks(this)
     UserMapManager.saveUserMap()
     UserManager.saveUsersBlocking()
     KitManager.cleanup()

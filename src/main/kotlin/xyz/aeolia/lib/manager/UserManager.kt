@@ -72,6 +72,7 @@ object UserManager {
   }
 
   @JvmStatic
+  @Synchronized
   fun saveUser(user: User) {
     if (user.uuid == null) return // Prevent data loss from saving malformed users
     val file = File(folder, user.uuid.toString() + ".json")
