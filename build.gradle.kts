@@ -41,9 +41,9 @@ dependencies {
     implementation("org.apache.commons:commons-text:1.1")
     implementation(libs.cymru.asheiou.configmanager)
     compileOnly(libs.org.jetbrains.kotlin.kotlin.stdlib.jdk8)
-    implementation(libs.org.jetbrains.kotlinx.kotlinx.coroutines.core.jvm)
-    implementation(libs.org.jetbrains.kotlinx.kotlinx.serialization.json.jvm)
-    implementation(libs.org.jetbrains.kotlin.kotlin.serialization.compiler.plugin)
+    compileOnly(libs.org.jetbrains.kotlinx.kotlinx.coroutines.core.jvm)
+    compileOnly(libs.org.jetbrains.kotlinx.kotlinx.serialization.json.jvm)
+    compileOnly(libs.org.jetbrains.kotlin.kotlin.serialization.compiler.plugin)
     compileOnly(libs.io.papermc.paper.paper.api)
     compileOnly(libs.net.essentialsx.essentialsx) {
         exclude(group = "org.spigotmc", module = "spigot-api")
@@ -61,7 +61,7 @@ dependencies {
 }
 
 group = "xyz.aeolia"
-version = "2.1.9"
+version = "2.1.10"
 description = "AeoliaLib"
 java.sourceCompatibility = JavaVersion.VERSION_21
 
