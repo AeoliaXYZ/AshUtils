@@ -57,7 +57,6 @@ object UserMapManager {
 
   @JvmStatic
   fun getUuidFromName(name: String): UUID? {
-    plugin.logger.info("Getting user from $name")
     if (!userMap.containsKey(name)) {
       return null
     }
