@@ -64,9 +64,6 @@ class BukkitEventListener(private val plugin: JavaPlugin) : Listener {
     user.online = true
     user.vanish = ess!!.getUser(player).isVanished
 
-    if (MotdHandler.motd != null) {
-      // Send MOTD if it exists
-      MessageLaterTask(player, MotdHandler.motd!!).runTaskLater(plugin, 20L)
-    }
+    MotdHandler.motd?.let { MessageLaterTask(player, it).runTaskLater(plugin, 20L) }
   }
 }
