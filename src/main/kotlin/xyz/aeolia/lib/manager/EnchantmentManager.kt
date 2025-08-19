@@ -89,11 +89,15 @@ object EnchantmentManager {
   }
 
   fun addSafeEnchant(enchantment: Enchantment, level: Int, item: ItemStack): EnchantResult {
-    if (!enchantment.canEnchantItem(item)) return EnchantResult.INCOMPATIBLE_ENCHANTMENT
-    if (conflicts(enchantment, item)) return EnchantResult.CONFLICTING_ENCHANTMENTS
-    if (enchantment.maxLevel < level) return EnchantResult.INVALID_LEVEL
-    item.addEnchantment(enchantment, level)
-    return EnchantResult.SUCCESS
+    return when {
+      !enchantment.canEnchantItem(item) -> EnchantResult.INCOMPATIBLE_ENCHANTMENT
+      conflicts(enchantment, item) -> EnchantResult.CONFLICTING_ENCHANTMENTS
+      enchantment.maxLevel < level -> EnchantResult.INVALID_LEVEL
+      else -> {
+        item.addEnchantment(enchantment, level)
+        EnchantResult.SUCCESS
+      }
+    }
   }
 
   /*
