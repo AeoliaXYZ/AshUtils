@@ -19,6 +19,7 @@ object UserManager {
   private val users: HashMap<UUID, User> = HashMap()
   private lateinit var plugin: JavaPlugin
   private lateinit var folder: File
+  private val json = Json { prettyPrint = true }
 
   @JvmStatic
   fun init(plugin: JavaPlugin) {
@@ -42,7 +43,7 @@ object UserManager {
     val user: User = run {
       if (!file.exists()) null
       try {
-        Json.decodeFromString<User>(file.readText())
+        json.decodeFromString<User>(file.readText())
       } catch (_: SerializationException) {
         plugin.logger.severe("Could not read file ${file.absolutePath}. Resetting it")
         null
@@ -75,7 +76,7 @@ object UserManager {
     val file = File(folder, user.uuid.toString() + ".json")
     try {
       FileWriter(file).use {
-        it.write(Json.encodeToString(user))
+        it.write(json.encodeToString(user))
         it.flush()
       }
     } catch (e: IOException) {
