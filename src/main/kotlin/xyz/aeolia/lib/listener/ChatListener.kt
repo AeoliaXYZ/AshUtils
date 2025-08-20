@@ -25,7 +25,8 @@ object ChatListener : Listener {
 
   fun matcher(text: String): Boolean {
     if (!text.startsWith(":")) return false
-    val text = text.drop(1)
-    return text.zipWithNext().all { (a, b) -> a != b }
+    val pairs = text.drop(1).zipWithNext()
+    if (pairs.isEmpty()) return false
+    return pairs.all { (a, b) -> a != b }
   }
 }
