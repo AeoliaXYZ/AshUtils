@@ -29,6 +29,12 @@ object KitManager {
     }
   }
 
+  @Deprecated("cleanup is no longer necessary, please remove the call to it in your code")
+  fun cleanup() {
+    plugin.logger.warning("A plugin has called the deprecated method KitManager.cleanup(), " +
+            "this will become an error in 2.2.0.")
+  }
+
   private suspend fun initCoroutine(recipient: Audience?) = withContext(Dispatchers.IO) {
     kits.clear()
     val folder = File(plugin.dataFolder, "kits").apply { mkdirs() }
