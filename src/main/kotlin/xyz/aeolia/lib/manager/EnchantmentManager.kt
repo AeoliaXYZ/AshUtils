@@ -4,10 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.papermc.paper.registry.RegistryAccess
 import io.papermc.paper.registry.RegistryKey
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import net.kyori.adventure.audience.Audience
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
@@ -44,29 +41,30 @@ object EnchantmentManager {
     }
   }
 
-  private fun reloadEnchantmentsCoro(recipient: Audience? = null) {
-    val file = File(plugin.dataFolder, "enchantments.json")
-    if (!file.exists()) {
-      plugin.saveResource("enchantments.json", false)
-    }
-    val json = file.readText()
-    val type = object : TypeToken<MutableMap<String, List<Int>>>() {}.type
-    enchantmentStrings = gson.fromJson(json, type)
-    enchantmentStrings.forEach { enchantmentString, list ->
-      if (list.isEmpty()) {
-        plugin.logger.severe("Missing enchantment levels for $enchantmentString!")
-        return@forEach
+  private suspend fun reloadEnchantmentsCoro(recipient: Audience? = null) =
+    withContext(Dispatchers.IO) {
+      val file = File(plugin.dataFolder, "enchantments.json")
+      if (!file.exists()) {
+        plugin.saveResource("enchantments.json", false)
       }
-      val enchantment = nameToEnchant(enchantmentString) ?: run {
-        plugin.logger.severe("Unrecognised enchantment $enchantmentString!")
-        return@forEach
+      val json = file.readText()
+      val type = object : TypeToken<MutableMap<String, List<Int>>>() {}.type
+      enchantmentStrings = gson.fromJson(json, type)
+      enchantmentStrings.forEach { enchantmentString, list ->
+        if (list.isEmpty()) {
+          plugin.logger.severe("Missing enchantment levels for $enchantmentString!")
+          return@forEach
+        }
+        val enchantment = nameToEnchant(enchantmentString) ?: run {
+          plugin.logger.severe("Unrecognised enchantment $enchantmentString!")
+          return@forEach
+        }
+        enchantments.put(enchantment, list)
       }
-      enchantments.put(enchantment, list)
+      recipient?.let {
+        MessageSender.sendMessage(it, "Enchantments reloaded successfully!")
+      }
     }
-    recipient?.let {
-      MessageSender.sendMessage(it, "Enchantments reloaded successfully!")
-    }
-  }
 
   fun cleanup() {
     scope?.cancel()
