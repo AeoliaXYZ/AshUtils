@@ -7,6 +7,7 @@ import org.bukkit.OfflinePlayer
 import org.bukkit.plugin.java.JavaPlugin
 import xyz.aeolia.lib.data.User
 import xyz.aeolia.lib.task.UserPruneTask
+import xyz.aeolia.lib.user
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileWriter
@@ -67,7 +68,7 @@ object UserManager {
   @JvmStatic
   fun removeUser(player: OfflinePlayer) {
     val uuid = player.uniqueId
-    saveUser(getUser(player, false)) // save user to prevent data loss from prune
+    saveUser(player.user(false)) // save user to prevent data loss from prune
     users.remove(uuid)
   }
 

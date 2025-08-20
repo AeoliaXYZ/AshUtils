@@ -1,96 +1,51 @@
 package xyz.aeolia.lib.manager
 
-import com.google.gson.Gson
+import kotlinx.serialization.json.Json
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
-import java.io.FileWriter
-import java.io.IOException
-import java.nio.file.Files
-import java.nio.file.Paths
-import java.util.*
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.CompletionException
-import java.util.function.Consumer
-import java.util.function.Function
+import java.util.UUID
 
 object UserMapManager {
-  private lateinit var filePath: String
+  private lateinit var plugin: JavaPlugin
+  private lateinit var file: File
 
   @JvmStatic
   var userMap: MutableMap<String, String> = mutableMapOf()
   var modified = false
 
-  private var gson: Gson = Gson()
-  private lateinit var plugin: JavaPlugin
+  private val json = Json { prettyPrint = true }
 
   fun init(plugin: JavaPlugin) {
     this.plugin = plugin
-    this.filePath = plugin.dataFolder.toString() + "/users.json"
+    this.file = File(plugin.dataFolder, "users.json")
     loadUserMap()
   }
 
   @JvmStatic
   fun loadUserMap() {
-    if (!File(filePath).exists()) {
-      try {
-        File(filePath).createNewFile()
-        gson.toJson(HashMap<String, String>(), FileWriter(filePath))
-      } catch (e: IOException) {
-        throw RuntimeException(e)
-      }
-    } else {
-      CompletableFuture.supplyAsync {
-        try {
-          val jsonContent = Files.readString(Paths.get(filePath))
-          return@supplyAsync gson.fromJson(jsonContent, MutableMap::class.java)
-        } catch (e: Exception) {
-          throw RuntimeException(e)
-        }
-      }.thenAccept(
-        Consumer { result: MutableMap<*, *> ->
-          @Suppress("UNCHECKED_CAST")
-          userMap = result as MutableMap<String, String>
-          plugin.logger.info("users.json loaded with " + userMap.size + " users!")
-        })
+    if (!file.exists()) {
+      file.writeText(json.encodeToString(userMap))
+      return
     }
+    userMap = json.decodeFromString<MutableMap<String, String>>(file.readText())
+    plugin.logger.info("users.json loaded with ${userMap.size} users!")
   }
 
   @JvmStatic
-  fun getUuidFromName(name: String): UUID? {
-    if (!userMap.containsKey(name)) {
-      return null
-    }
-    return UUID.fromString(userMap[name])
-  }
+  fun getUuidFromName(name: String): UUID? =
+    userMap[name]?.let(UUID::fromString)
 
   @JvmStatic
   fun putUserInMap(name: String, uuid: UUID) {
-    userMap.put(name, uuid.toString())
+    userMap[name] = uuid.toString()
     modified = true
   }
 
   @JvmStatic
   fun saveUserMap() {
-    if (userMap.isEmpty()) return  // Prevent userMap from overwriting if the plugin crashes on startup
-    if (!modified) return
-    CompletableFuture.runAsync {
-      try {
-        FileWriter(filePath).use { writer ->
-          gson.toJson(userMap, writer)
-        }
-      } catch (e: IOException) {
-        throw CompletionException(e)
-      }
-
-    }.thenRun {
-      plugin.logger.info("Saved users.json with " + userMap.size + " values!")
-      modified = false
-
-    }.exceptionally(Function { t: Throwable ->
-        plugin.logger.severe("Failed to save users.json! Dumping it to console. Reason: " + t.message)
-        plugin.logger.severe("StackTrace: " + t.stackTrace.contentToString())
-        plugin.logger.severe("users.json: " + gson.toJson(userMap))
-        null
-      })
+    if (userMap.isEmpty() || !modified) return  // Prevent userMap from overwriting if the plugin crashes on startup
+    file.writeText(json.encodeToString(userMap))
+    plugin.logger.info("Saved users.json with ${userMap.size} values!")
+    modified = false
   }
 }

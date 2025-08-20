@@ -13,8 +13,9 @@ class ROEQuitTask(val plugin: JavaPlugin) : BukkitRunnable() {
     if (roeEnabled && Bukkit.getOnlinePlayers().isEmpty()) {
       plugin.logger.info("Restarting...")
       Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "restart")
-    } else {
-      plugin.logger.info("No restart because " + (if (roeEnabled) "server is not empty." else "ROE is not enabled."))
+      return
     }
+
+    plugin.logger.info("No restart because " + (if (roeEnabled) "server is not empty." else "ROE is not enabled."))
   }
 }

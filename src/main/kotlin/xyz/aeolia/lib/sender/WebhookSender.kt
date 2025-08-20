@@ -8,20 +8,21 @@ import org.bukkit.plugin.java.JavaPlugin
 import xyz.aeolia.lib.utils.Message.Error.CONFIG
 import xyz.aeolia.lib.utils.Message.Error.REQUEST_FAIL
 import java.net.URI
+import java.net.URISyntaxException
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 
 class WebhookSender {
   companion object {
-    lateinit var plugin : JavaPlugin
+    lateinit var plugin: JavaPlugin
 
     fun init(plugin: JavaPlugin) {
       this.plugin = plugin
     }
 
     @JvmStatic
-    fun postWebhook(uri: URI, content: String) : HttpResponse<String?> {
+    fun postWebhook(uri: URI, content: String): HttpResponse<String?> {
       val builder = HttpRequest.newBuilder(uri)
       val json = JsonObject()
       json.addProperty("content", content)
@@ -35,13 +36,15 @@ class WebhookSender {
     /*
     Send a Component to all users, then send the plaintext equivalent to the discord.broadcast-webhook.
      */
-    fun broadcast(message: Component) : Boolean {
+    fun broadcast(message: Component): Boolean {
       MessageSender.sendMessage(Bukkit.getServer(), message, true)
       val messageAsString = PlainTextComponentSerializer.plainText().serialize(message)
-      val uri = URI(plugin.config.getString("discord.broadcast-webhook") ?: run {
+      val uri = try {
+        URI(plugin.config.getString("discord.broadcast-webhook") ?: "")
+      } catch (_: URISyntaxException) {
         plugin.logger.info(String.format(CONFIG, "discord.broadcast-webhook"))
         return false
-      })
+      }
       val response = postWebhook(uri, messageAsString)
       if (response.statusCode() != 204) {
         plugin.logger.info(String.format(REQUEST_FAIL, response.statusCode(), response.body()))

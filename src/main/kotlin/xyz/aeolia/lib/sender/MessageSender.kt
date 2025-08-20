@@ -4,6 +4,7 @@ import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.text.Component
 import org.bukkit.plugin.java.JavaPlugin
 import xyz.aeolia.lib.miniMessage
+import xyz.aeolia.lib.plaintext
 
 object MessageSender {
   lateinit var plugin: JavaPlugin
@@ -21,12 +22,12 @@ object MessageSender {
   ) {
     if (message.isNullOrEmpty()) return
     sendMessage(recipient, message.miniMessage(), includePrefix)
-
   }
 
   @JvmStatic
   fun sendMessage(recipient: Audience, message: Component, includePrefix: Boolean = true) {
     val toSend: Component
+    if (message.plaintext().isEmpty()) return
     if (includePrefix) {
       val prefix = (plugin.config.getString("chat-prefix") + " <reset>").miniMessage()
       toSend = Component.text()

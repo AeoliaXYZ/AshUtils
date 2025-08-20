@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "xyz.aeolia"
-version = "2.1.10"
+version = "2.1.11-dev1"
 description = "AeoliaLib"
 java.sourceCompatibility = JavaVersion.VERSION_21
 
