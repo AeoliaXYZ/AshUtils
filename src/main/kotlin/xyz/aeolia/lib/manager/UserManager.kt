@@ -1,6 +1,6 @@
 package xyz.aeolia.lib.manager
 
-import kotlinx.serialization.encodeToString
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
@@ -9,7 +9,6 @@ import xyz.aeolia.lib.data.User
 import xyz.aeolia.lib.task.UserPruneTask
 import xyz.aeolia.lib.user
 import java.io.File
-import java.io.FileNotFoundException
 import java.io.FileWriter
 import java.io.IOException
 import java.util.*
@@ -41,21 +40,18 @@ object UserManager {
 
     val file = File(folder, "${uuid}.json")
     val user: User = run {
-      if (!file.exists()) {
-        return@run User(uuid = uuid, online = player.isOnline)
-      }
+      if (!file.exists()) null
       try {
-        return@run Json.decodeFromString(file.readText())!!
-      } catch (_: FileNotFoundException) {
-        plugin.logger.severe("Could not read file ${file.absolutePath}.")
-        return@run null
+        Json.decodeFromString<User>(file.readText())
+      } catch (_: SerializationException) {
+        plugin.logger.severe("Could not read file ${file.absolutePath}. Resetting it")
+        null
       }
-    } ?: run { return User() }
+    } ?: run { return User(uuid = uuid, online = player.isOnline) }
     putUser(user)
 
-    if (!user.online && retain) {
+    if (!user.online && retain)
       UserPruneTask(player, plugin).runTaskLater(plugin, plugin.config.getLong("prune-time"))
-    }
 
     return user
   }
