@@ -12,7 +12,7 @@ import xyz.aeolia.lib.player
 import xyz.aeolia.lib.sender.MessageSender
 import xyz.aeolia.lib.utils.Message
 
-class EnchantTabExecutor(val plugin: JavaPlugin) : TabExecutor {
+class EnchantTabExecutor(private val plugin: JavaPlugin) : TabExecutor {
   override fun onTabComplete(
     sender: CommandSender,
     command: Command,

@@ -1,8 +1,6 @@
 package xyz.aeolia.lib.listener
 
 import com.earth2me.essentials.Essentials
-import io.papermc.paper.event.player.AsyncChatEvent
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -11,39 +9,14 @@ import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.plugin.java.JavaPlugin
 import xyz.aeolia.lib.command.admin.util.MotdHandler
-import xyz.aeolia.lib.manager.StatusManager
 import xyz.aeolia.lib.manager.UserMapManager
-import xyz.aeolia.lib.sender.MessageSender
 import xyz.aeolia.lib.task.MessageLaterTask
 import xyz.aeolia.lib.task.ROEQuitTask
 import xyz.aeolia.lib.task.UserPruneTask
 import xyz.aeolia.lib.user
-import java.util.regex.Pattern
 
-class BukkitEventListener(private val plugin: JavaPlugin) : Listener {
-  private val pattern: Pattern = Pattern.compile("^:[A-Z]{4,}$")
+class JoinQuitListener(private val plugin: JavaPlugin) : Listener {
   private val ess: Essentials? = Bukkit.getPluginManager().getPlugin("Essentials") as? Essentials
-
-  @EventHandler(priority = EventPriority.LOWEST)
-  fun onPlayerQuit(event: PlayerQuitEvent) {
-    event.player.user().online = false
-    ROEQuitTask(this.plugin).runTaskLater(this.plugin, 3)
-    UserPruneTask(event.player, plugin).runTaskLater(this.plugin, plugin.config.getLong("prune-time"))
-  }
-
-  @EventHandler(priority = EventPriority.HIGH)
-  fun onChat(event: AsyncChatEvent) {
-    val plainText = PlainTextComponentSerializer.plainText().serialize(event.message())
-    if (pattern.matcher(plainText).matches()) {
-      MessageSender.sendMessage(event.player, "To use commands, type /<command>.", true)
-      event.isCancelled = true
-      return
-    }
-    if (StatusManager.getStatus("lockchat") && !event.player.hasPermission("lib.lockchat.exempt")) {
-      event.isCancelled = true
-      MessageSender.sendMessage(event.player, "Chat has been locked by a moderator.", true)
-    }
-  }
 
   @EventHandler(priority = EventPriority.LOW)
   fun onPlayerJoin(event: PlayerJoinEvent) {
@@ -65,5 +38,13 @@ class BukkitEventListener(private val plugin: JavaPlugin) : Listener {
     user.vanish = ess!!.getUser(player).isVanished
 
     MotdHandler.motd?.let { MessageLaterTask(player, it).runTaskLater(plugin, 20L) }
+  }
+
+
+  @EventHandler(priority = EventPriority.LOWEST)
+  fun onPlayerQuit(event: PlayerQuitEvent) {
+    event.player.user().online = false
+    ROEQuitTask(plugin).runTaskLater(plugin, 3)
+    UserPruneTask(event.player, plugin).runTaskLater(plugin, plugin.config.getLong("prune-time"))
   }
 }

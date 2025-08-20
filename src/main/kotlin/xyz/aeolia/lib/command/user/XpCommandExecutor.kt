@@ -16,7 +16,7 @@ import xyz.aeolia.lib.utils.Message.Generic.COMMAND_USAGE
 import xyz.aeolia.lib.utils.Message.Generic.TOO_MANY_ARGS
 import kotlin.math.floor
 
-class XpCommandExecutor(var plugin: JavaPlugin) : CommandExecutor {
+class XpCommandExecutor(private val plugin: JavaPlugin) : CommandExecutor {
   val aqua: String = "<aqua>"
   val reset: String = "</aqua>"
   val econ: Economy? = EconManager.econ

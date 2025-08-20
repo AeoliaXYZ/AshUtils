@@ -24,7 +24,7 @@ open class AeoliaLib : JavaPlugin() {
     logger.info("Started load...")
     val startTime = Instant.now()
     val pm = server.pluginManager
-    val notEnabled = NotEnabledCommandExecutor()
+    val notEnabled = NotEnabledCommandExecutor
     // Dependency check
     try {
       Class.forName("kotlin.Unit")
@@ -48,9 +48,10 @@ open class AeoliaLib : JavaPlugin() {
     // Repeaters
     Bukkit.getScheduler().scheduleSyncRepeatingTask(this, { this.saveAll() }, 6000L, 6000L)
     Bukkit.getScheduler().scheduleSyncRepeatingTask(this, { mineListener.tick() }, 1L, 1L)
-    pm.registerEvents(BukkitEventListener(this), this)
+    pm.registerEvents(JoinQuitListener(this), this)
     pm.registerEvents(EssEventListener(this), this)
     pm.registerEvents(PVPListener(this), this)
+    pm.registerEvents(ChatListener, this)
     // Config
     configManager.loadConfig()
     config.options().copyDefaults(true)

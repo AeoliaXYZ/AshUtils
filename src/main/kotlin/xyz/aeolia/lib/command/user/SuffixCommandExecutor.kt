@@ -17,7 +17,7 @@ import xyz.aeolia.lib.sender.MessageSender
 import xyz.aeolia.lib.utils.Message
 import java.util.function.Consumer
 
-class SuffixCommandExecutor(var plugin: JavaPlugin) : TabExecutor {
+class SuffixCommandExecutor(private val plugin: JavaPlugin) : TabExecutor {
   override fun onCommand(
     sender: CommandSender, command: Command,
     label: String, args: Array<String>
