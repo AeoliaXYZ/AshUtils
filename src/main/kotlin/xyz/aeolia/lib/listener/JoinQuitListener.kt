@@ -9,11 +9,13 @@ import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.plugin.java.JavaPlugin
 import xyz.aeolia.lib.command.admin.util.MotdHandler
+import xyz.aeolia.lib.manager.StatusManager
 import xyz.aeolia.lib.manager.UserMapManager
 import xyz.aeolia.lib.task.MessageLaterTask
 import xyz.aeolia.lib.task.ROEQuitTask
 import xyz.aeolia.lib.task.UserPruneTask
 import xyz.aeolia.lib.user
+import xyz.aeolia.lib.utils.Message
 
 class JoinQuitListener(private val plugin: JavaPlugin) : Listener {
   private val ess: Essentials? = Bukkit.getPluginManager().getPlugin("Essentials") as? Essentials
@@ -37,7 +39,10 @@ class JoinQuitListener(private val plugin: JavaPlugin) : Listener {
     user.online = true
     user.vanish = ess!!.getUser(player).isVanished
 
-    MotdHandler.motd?.let { MessageLaterTask(player, it).runTaskLater(plugin, 20L) }
+    MotdHandler.motd?.let { MessageLaterTask(player, it).runTaskLater(plugin, 5L) }
+
+    if(StatusManager.getStatus("lockchat"))
+      MessageLaterTask(player, Message.Chat.LOCKED).runTaskLater(plugin, 20L)
   }
 
 
