@@ -2,8 +2,8 @@ package xyz.aeolia.lib.manager
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import net.kyori.adventure.audience.Audience
 import org.bukkit.entity.Player
@@ -17,55 +17,38 @@ import java.io.File
 object KitManager {
   val kits = mutableMapOf<String, Kit>()
   private lateinit var plugin: JavaPlugin
-  private var scope: CoroutineScope? = null
   private var loaded = false
+  private val json = Json { prettyPrint = true }
 
-  @JvmStatic
   fun init(plugin: JavaPlugin, recipient: Audience? = null) {
-    loaded = false
     this.plugin = plugin
-    cleanup()
-    scope = CoroutineScope(Dispatchers.Default)
-    scope!!.launch {
+    loaded = false
+    CoroutineScope(Dispatchers.Default).launch {
       initCoroutine(recipient)
       loaded = true
     }
   }
 
-  private fun initCoroutine(recipient: Audience? = null) {
+  private suspend fun initCoroutine(recipient: Audience?) = withContext(Dispatchers.IO) {
     kits.clear()
-    val folder = File(plugin.dataFolder, "kits")
-    if (!folder.exists()) {
-      folder.mkdirs()
-    }
+    val folder = File(plugin.dataFolder, "kits").apply { mkdirs() }
     folder.listFiles()?.forEach {
-      if (!it.isFile) {
-        return@forEach
-      }
+      if (!it.isFile) return@forEach
       try {
         val id = it.nameWithoutExtension
-        val kit = Json.decodeFromString<Kit>(it.readText()).apply {
-          this.id = id
-        }
+        val kit = json.decodeFromString<Kit>(it.readText()).apply { this.id = id }
         kits[id] = kit
       } catch (e: Exception) {
         plugin.logger.warning("Exception while reading ${it.name}: ${e.message}")
       }
     }
-    if (recipient != null) {
-      MessageSender.sendMessage(recipient, "Kit reload complete! ${kits.size} kits loaded.")
-    }
-  }
-
-  fun cleanup() {
-    scope?.cancel()
+    recipient?.let { MessageSender.sendMessage(it, "Kit reload complete! ${kits.size} kits loaded.") }
   }
 
   fun givePlayerKit(player: Player, kit: Kit): Boolean {
     if (!loaded) return false
-    val items = kit.items.toMutableList()
-    if (kits.containsKey("__global__")) {
-      items.addAll(kits["__global__"]!!.items)
+    val items = kit.items.toMutableList().apply {
+      kits["__global__"]?.let { addAll(it.items) }
     }
     player.inventory.clear()
     items.forEach {
