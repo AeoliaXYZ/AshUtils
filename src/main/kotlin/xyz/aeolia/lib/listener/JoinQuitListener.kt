@@ -24,15 +24,15 @@ class JoinQuitListener(private val plugin: JavaPlugin) : Listener {
   fun onPlayerJoin(event: PlayerJoinEvent) {
     val player = event.player
     val refUUID = UserMapManager.getUuidFromName(player.name)
-    if (refUUID != null) {
-      if (refUUID == player.uniqueId) {
-        plugin.logger.info(player.name + " is already registered to users.json.")
-      } else {
-        plugin.logger.info(player.name + " is registered to users.json as another UUID! Correcting.")
+
+    plugin.logger.info(
+      when (refUUID) {
+        null -> "${player.name} is not registered to users.json. Adding them."
+        player.uniqueId -> "${player.name} is already registered to users.json."
+        else -> "${player.name} is registered to users.json as another UUID! Correcting."
       }
-    } else {
-      plugin.logger.info(player.name + " is not registered to users.json. Adding them.")
-    }
+    )
+
     UserMapManager.putUserInMap(player.name, player.uniqueId)
 
     val user = player.user()
