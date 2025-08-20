@@ -84,11 +84,11 @@ object KitManager {
   fun equipIfArmor(player: Player, stack: ItemStack): Boolean {
     val id = stack.type.name
     when {
-      id.contains("HELMET") -> player.inventory.helmet = stack
-      id.contains("CHESTPLATE") -> player.inventory.chestplate = stack
-      id.contains("LEGGINGS") -> player.inventory.leggings = stack
-      id.contains("BOOTS") -> player.inventory.boots = stack
-      id.contains("SHIELD") -> player.inventory.setItemInOffHand(stack)
+      "HELMET" in id -> player.inventory.helmet = stack
+      "CHESTPLATE" in id -> player.inventory.chestplate = stack
+      "LEGGINGS" in id -> player.inventory.leggings = stack
+      "BOOTS" in id -> player.inventory.boots = stack
+      "SHIELD" in id -> player.inventory.setItemInOffHand(stack)
       else -> return false
     }
     return true
