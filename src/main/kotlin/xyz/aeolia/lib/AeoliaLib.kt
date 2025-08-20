@@ -115,7 +115,6 @@ open class AeoliaLib : JavaPlugin() {
     Bukkit.getScheduler().cancelTasks(this)
     UserMapManager.saveUserMap()
     UserManager.saveUsersBlocking()
-    KitManager.cleanup()
   }
 
   fun saveAll() {
