@@ -1,10 +1,10 @@
 package xyz.aeolia.lib.manager
 
-import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.papermc.paper.registry.RegistryAccess
 import io.papermc.paper.registry.RegistryKey
 import kotlinx.coroutines.*
+import kotlinx.serialization.json.Json
 import net.kyori.adventure.audience.Audience
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
@@ -23,8 +23,7 @@ object EnchantmentManager {
   private var scope: CoroutineScope? = null
   private var loaded = false
 
-  val registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT)
-  val gson = Gson()
+  private val registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT)
 
   fun init(plugin: JavaPlugin) {
     this.plugin = plugin
@@ -48,8 +47,7 @@ object EnchantmentManager {
         plugin.saveResource("enchantments.json", false)
       }
       val json = file.readText()
-      val type = object : TypeToken<MutableMap<String, List<Int>>>() {}.type
-      enchantmentStrings = gson.fromJson(json, type)
+      enchantmentStrings = Json.decodeFromString<MutableMap<String, List<Int>>>(json)
       enchantmentStrings.forEach { enchantmentString, list ->
         if (list.isEmpty()) {
           plugin.logger.severe("Missing enchantment levels for $enchantmentString!")
