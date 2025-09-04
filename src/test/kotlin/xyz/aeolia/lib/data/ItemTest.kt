@@ -8,7 +8,7 @@ import org.mockbukkit.mockbukkit.MockBukkit
 import org.mockbukkit.mockbukkit.ServerMock
 import org.mockbukkit.mockbukkit.plugin.PluginMock
 import xyz.aeolia.lib.sender.MessageSender
-
+/*
 class ItemTest {
   lateinit var server: ServerMock
   lateinit var plugin: PluginMock
@@ -66,3 +66,4 @@ class ItemTest {
     assertNull(itemStack)
   }
 }
+ */

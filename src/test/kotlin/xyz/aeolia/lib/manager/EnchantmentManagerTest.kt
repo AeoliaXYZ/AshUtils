@@ -13,10 +13,9 @@ import org.mockbukkit.mockbukkit.entity.PlayerMock
 import org.mockbukkit.mockbukkit.inventory.ItemStackMock
 import org.mockbukkit.mockbukkit.plugin.PluginMock
 import xyz.aeolia.lib.data.EnchantResult
- */
+
 
 class EnchantmentManagerTest {
-  /*
   lateinit var server: ServerMock
   lateinit var plugin: PluginMock
   lateinit var player: PlayerMock
@@ -63,5 +62,5 @@ class EnchantmentManagerTest {
     val enchantResult = EnchantmentManager.addSafeEnchant(Enchantment.SMITE, 4, itemStack)
     assertEquals(enchantResult, EnchantResult.CONFLICTING_ENCHANTMENTS)
     assertEquals(itemStack.enchantments, controlStack.enchantments)
-  }*/
-}
+  }
+}*/
