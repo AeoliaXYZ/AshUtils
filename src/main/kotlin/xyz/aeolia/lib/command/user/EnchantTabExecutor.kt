@@ -12,7 +12,7 @@ import xyz.aeolia.lib.player
 import xyz.aeolia.lib.sender.MessageSender
 import xyz.aeolia.lib.utils.Message
 
-class EnchantTabExecutor(val plugin: JavaPlugin) : TabExecutor {
+class EnchantTabExecutor(private val plugin: JavaPlugin) : TabExecutor {
   override fun onTabComplete(
     sender: CommandSender,
     command: Command,
@@ -28,14 +28,13 @@ class EnchantTabExecutor(val plugin: JavaPlugin) : TabExecutor {
       }
     } else if (args.size == 2) {
       if (args[0] in EnchantmentManager.enchantmentStrings.keys) {
-        var i = 0
-        EnchantmentManager.enchantmentStrings[args[0]]!!.forEach { _ ->
-          commands.add((i+1).toString()).also { i++ }
-        }
+        commands.addAll(
+          EnchantmentManager.enchantmentStrings[args[0]]!!.indices.map { (it + 1).toString() }
+        )
       }
     }
 
-    StringUtil.copyPartialMatches<MutableList<String>>(args[0], commands, completions)
+    StringUtil.copyPartialMatches(args[0], commands, completions)
     completions.sort()
     return completions
   }
@@ -61,14 +60,14 @@ class EnchantTabExecutor(val plugin: JavaPlugin) : TabExecutor {
       args.add(maxLevel.toString())
     }
 
-    val currencySymbol = plugin.config.getString("currency-symbol")
+    val currencySymbol = plugin.config.getString("currency-symbol") ?: "$"
 
     if(args[1] == "price") {
-      var i = 1
-      var message = "<aqua>Prices for ${args[0]}:</aqua>"
-      enchantPrices.forEach {
-        message += "\n$i: $currencySymbol$it"
-        i++
+      val message = buildString {
+        append("<aqua>Prices for ${args[0]}:</aqua>")
+        enchantPrices.forEachIndexed { i, price ->
+          append("\n${i + 1}: $currencySymbol$price")
+        }
       }
       return true.also { MessageSender.sendMessage(sender, message, false) }
     }

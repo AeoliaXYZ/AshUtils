@@ -16,7 +16,7 @@ import org.mockito.Mockito.mock
 import xyz.aeolia.lib.manager.StatusManager
 import xyz.aeolia.lib.sender.MessageSender
 
-class BukkitEventListenerTest {
+class ChatListenerTest {
   lateinit var server: ServerMock
   lateinit var plugin: PluginMock
 
@@ -38,7 +38,7 @@ class BukkitEventListenerTest {
   fun testChatCapsBlock() {
     try {
       val chatEvent = createAsyncChatEvent(":BLARG")
-      BukkitEventListener(plugin).onChat(chatEvent)
+      ChatListener.onChat(chatEvent)
       Assertions.assertTrue(chatEvent.isCancelled)
     } catch (t: Throwable) {
       t.printStackTrace()
@@ -50,7 +50,7 @@ class BukkitEventListenerTest {
     try {
       StatusManager.setStatus("lockchat", true)
       val chatEvent = createAsyncChatEvent("hello")
-      BukkitEventListener(plugin).onChat(chatEvent)
+      ChatListener.onChat(chatEvent)
       Assertions.assertTrue(chatEvent.isCancelled)
     } catch (t: Throwable) {
       t.printStackTrace()
@@ -62,7 +62,7 @@ class BukkitEventListenerTest {
     try {
       StatusManager.setStatus("lockchat", false)
       val chatEvent = createAsyncChatEvent("hello")
-      BukkitEventListener(plugin).onChat(chatEvent)
+      ChatListener.onChat(chatEvent)
       Assertions.assertFalse(chatEvent.isCancelled)
     } catch (t: Throwable) {
       t.printStackTrace()

@@ -1,6 +1,10 @@
 package xyz.aeolia.lib.utils
 
 object Message {
+  object Chat {
+    const val LOCKED = "Chat has been locked by a moderator."
+  }
+
   object Econ {
     const val SOLD = "You have sold <aqua>%d<reset> %s for <aqua>%s%d<reset>."
     const val TOO_MANY = "You don't have that many to sell!"

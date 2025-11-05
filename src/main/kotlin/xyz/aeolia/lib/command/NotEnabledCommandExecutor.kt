@@ -5,7 +5,7 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import xyz.aeolia.lib.sender.MessageSender
 
-class NotEnabledCommandExecutor : CommandExecutor {
+object NotEnabledCommandExecutor : CommandExecutor {
   override fun onCommand(
     sender: CommandSender,
     command: Command,

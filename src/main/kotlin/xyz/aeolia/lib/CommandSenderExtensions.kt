@@ -13,4 +13,4 @@ fun CommandSender.player(): Player? = if (this is Player) this else {
   null
 }
 
-fun OfflinePlayer.user(): User = UserManager.getUser(this)
+fun OfflinePlayer.user(retain: Boolean = true): User = UserManager.getUser(this, retain)

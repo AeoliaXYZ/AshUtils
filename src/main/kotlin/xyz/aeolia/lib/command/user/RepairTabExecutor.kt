@@ -15,7 +15,7 @@ import xyz.aeolia.lib.player
 import xyz.aeolia.lib.sender.MessageSender.sendMessage
 import xyz.aeolia.lib.utils.Message
 
-class RepairTabExecutor(val plugin: JavaPlugin) : TabExecutor {
+class RepairTabExecutor(private val plugin: JavaPlugin) : TabExecutor {
   private val econ: Economy? = EconManager.econ
 
   override fun onTabComplete(

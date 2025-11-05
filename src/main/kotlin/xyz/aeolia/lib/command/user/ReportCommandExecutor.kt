@@ -16,7 +16,7 @@ import kotlin.Array
 import kotlin.Boolean
 import kotlin.Exception
 
-class ReportCommandExecutor(var plugin: JavaPlugin) : CommandExecutor {
+class ReportCommandExecutor(private val plugin: JavaPlugin) : CommandExecutor {
   override fun onCommand(
     sender: CommandSender,
     command: Command,

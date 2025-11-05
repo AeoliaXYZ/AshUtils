@@ -1,14 +1,14 @@
 package xyz.aeolia.lib.manager
 
-import kotlinx.serialization.encodeToString
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import org.bukkit.Bukkit
 import org.bukkit.OfflinePlayer
 import org.bukkit.plugin.java.JavaPlugin
 import xyz.aeolia.lib.data.User
 import xyz.aeolia.lib.task.UserPruneTask
+import xyz.aeolia.lib.user
 import java.io.File
-import java.io.FileNotFoundException
 import java.io.FileWriter
 import java.io.IOException
 import java.util.*
@@ -19,6 +19,7 @@ object UserManager {
   private val users: HashMap<UUID, User> = HashMap()
   private lateinit var plugin: JavaPlugin
   private lateinit var folder: File
+  private val json = Json { prettyPrint = true }
 
   @JvmStatic
   fun init(plugin: JavaPlugin) {
@@ -40,21 +41,18 @@ object UserManager {
 
     val file = File(folder, "${uuid}.json")
     val user: User = run {
-      if (!file.exists()) {
-        return@run User(uuid = uuid, online = player.isOnline)
-      }
+      if (!file.exists()) null
       try {
-        return@run Json.decodeFromString(file.readText())!!
-      } catch (_: FileNotFoundException) {
-        plugin.logger.severe("Could not read file ${file.absolutePath}.")
-        return@run null
+        json.decodeFromString<User>(file.readText())
+      } catch (_: SerializationException) {
+        plugin.logger.severe("Could not read file ${file.absolutePath}. Resetting it")
+        null
       }
-    } ?: run { return User() }
+    } ?: run { return User(uuid = uuid, online = player.isOnline) }
     putUser(user)
 
-    if (!user.online && retain) {
+    if (!user.online && retain)
       UserPruneTask(player, plugin).runTaskLater(plugin, plugin.config.getLong("prune-time"))
-    }
 
     return user
   }
@@ -67,7 +65,7 @@ object UserManager {
   @JvmStatic
   fun removeUser(player: OfflinePlayer) {
     val uuid = player.uniqueId
-    saveUser(getUser(player, false)) // save user to prevent data loss from prune
+    saveUser(player.user(false)) // save user to prevent data loss from prune
     users.remove(uuid)
   }
 
@@ -78,7 +76,7 @@ object UserManager {
     val file = File(folder, user.uuid.toString() + ".json")
     try {
       FileWriter(file).use {
-        it.write(Json.encodeToString(user))
+        it.write(json.encodeToString(user))
         it.flush()
       }
     } catch (e: IOException) {

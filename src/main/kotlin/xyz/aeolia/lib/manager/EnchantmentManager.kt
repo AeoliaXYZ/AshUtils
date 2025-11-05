@@ -1,13 +1,10 @@
 package xyz.aeolia.lib.manager
 
-import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.papermc.paper.registry.RegistryAccess
 import io.papermc.paper.registry.RegistryKey
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlinx.serialization.json.Json
 import net.kyori.adventure.audience.Audience
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
@@ -26,8 +23,7 @@ object EnchantmentManager {
   private var scope: CoroutineScope? = null
   private var loaded = false
 
-  val registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT)
-  val gson = Gson()
+  private val registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT)
 
   fun init(plugin: JavaPlugin) {
     this.plugin = plugin
@@ -44,29 +40,29 @@ object EnchantmentManager {
     }
   }
 
-  private fun reloadEnchantmentsCoro(recipient: Audience? = null) {
-    val file = File(plugin.dataFolder, "enchantments.json")
-    if (!file.exists()) {
-      plugin.saveResource("enchantments.json", false)
-    }
-    val json = file.readText()
-    val type = object : TypeToken<MutableMap<String, List<Int>>>() {}.type
-    enchantmentStrings = gson.fromJson(json, type)
-    enchantmentStrings.forEach { enchantmentString, list ->
-      if (list.isEmpty()) {
-        plugin.logger.severe("Missing enchantment levels for $enchantmentString!")
-        return@forEach
+  private suspend fun reloadEnchantmentsCoro(recipient: Audience? = null) =
+    withContext(Dispatchers.IO) {
+      val file = File(plugin.dataFolder, "enchantments.json")
+      if (!file.exists()) {
+        plugin.saveResource("enchantments.json", false)
       }
-      val enchantment = nameToEnchant(enchantmentString) ?: run {
-        plugin.logger.severe("Unrecognised enchantment $enchantmentString!")
-        return@forEach
+      val json = file.readText()
+      enchantmentStrings = Json.decodeFromString<MutableMap<String, List<Int>>>(json)
+      enchantmentStrings.forEach { enchantmentString, list ->
+        if (list.isEmpty()) {
+          plugin.logger.severe("Missing enchantment levels for $enchantmentString!")
+          return@forEach
+        }
+        val enchantment = nameToEnchant(enchantmentString) ?: run {
+          plugin.logger.severe("Unrecognised enchantment $enchantmentString!")
+          return@forEach
+        }
+        enchantments.put(enchantment, list)
       }
-      enchantments.put(enchantment, list)
+      recipient?.let {
+        MessageSender.sendMessage(it, "Enchantments reloaded successfully!")
+      }
     }
-    recipient?.let {
-      MessageSender.sendMessage(it, "Enchantments reloaded successfully!")
-    }
-  }
 
   fun cleanup() {
     scope?.cancel()
@@ -89,11 +85,15 @@ object EnchantmentManager {
   }
 
   fun addSafeEnchant(enchantment: Enchantment, level: Int, item: ItemStack): EnchantResult {
-    if (!enchantment.canEnchantItem(item)) return EnchantResult.INCOMPATIBLE_ENCHANTMENT
-    if (conflicts(enchantment, item)) return EnchantResult.CONFLICTING_ENCHANTMENTS
-    if (enchantment.maxLevel < level) return EnchantResult.INVALID_LEVEL
-    item.addEnchantment(enchantment, level)
-    return EnchantResult.SUCCESS
+    return when {
+      !enchantment.canEnchantItem(item) -> EnchantResult.INCOMPATIBLE_ENCHANTMENT
+      conflicts(enchantment, item) -> EnchantResult.CONFLICTING_ENCHANTMENTS
+      enchantment.maxLevel < level -> EnchantResult.INVALID_LEVEL
+      else -> {
+        item.addEnchantment(enchantment, level)
+        EnchantResult.SUCCESS
+      }
+    }
   }
 
   /*

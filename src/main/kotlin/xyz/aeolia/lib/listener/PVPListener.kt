@@ -19,7 +19,7 @@ import xyz.aeolia.lib.sender.MessageSender
 import xyz.aeolia.lib.user
 import xyz.aeolia.lib.utils.Message
 
-class PVPListener(val plugin: JavaPlugin) : Listener {
+class PVPListener(private val plugin: JavaPlugin) : Listener {
   val playersWarned = mutableListOf<Player>()
 
   @EventHandler(priority = EventPriority.NORMAL)

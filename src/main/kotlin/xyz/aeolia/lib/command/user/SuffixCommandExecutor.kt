@@ -17,7 +17,7 @@ import xyz.aeolia.lib.sender.MessageSender
 import xyz.aeolia.lib.utils.Message
 import java.util.function.Consumer
 
-class SuffixCommandExecutor(var plugin: JavaPlugin) : TabExecutor {
+class SuffixCommandExecutor(private val plugin: JavaPlugin) : TabExecutor {
   override fun onCommand(
     sender: CommandSender, command: Command,
     label: String, args: Array<String>
@@ -41,7 +41,7 @@ class SuffixCommandExecutor(var plugin: JavaPlugin) : TabExecutor {
     if (args[0] == "create") {
       if (!sender.hasPermission("lib.suffix-create")) return true
       val formatted = SuffixMenu.formatSuffix(args[1], true)
-      PermissionManager.api!!.groupManager.createAndLoadGroup(args[1])
+      PermissionManager.api.groupManager.createAndLoadGroup(args[1])
         .thenAccept(Consumer { e: Group ->
           val formattedAmpersand = SuffixMenu.formatSuffix(args[1], false)
           val node: Node = SuffixNode.builder()
@@ -49,7 +49,7 @@ class SuffixCommandExecutor(var plugin: JavaPlugin) : TabExecutor {
             .suffix(" $formattedAmpersand")
             .build()
           e.data().add(node)
-          PermissionManager.api!!.groupManager.saveGroup(e)
+          PermissionManager.api.groupManager.saveGroup(e)
           if (!suffixList.contains(args[1])) {
             plugin.config.set("suffix.list", suffixList)
             plugin.saveConfig()
