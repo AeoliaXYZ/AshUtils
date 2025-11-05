@@ -14,7 +14,6 @@ import xyz.aeolia.lib.manager.UserMapManager
 import xyz.aeolia.lib.task.MessageLaterTask
 import xyz.aeolia.lib.task.ROEQuitTask
 import xyz.aeolia.lib.task.UserPruneTask
-import xyz.aeolia.lib.task.VanishJoinTask
 import xyz.aeolia.lib.user
 import xyz.aeolia.lib.utils.Message
 
@@ -36,9 +35,10 @@ class JoinQuitListener(private val plugin: JavaPlugin) : Listener {
 
     UserMapManager.putUserInMap(player.name, player.uniqueId)
 
-    player.user().online = true
+    val user = player.user()
+    user.online = true
+    user.vanish = ess!!.getUser(player).isVanished
 
-    VanishJoinTask(ess!!.getUser(player)).runTaskLater(plugin, 1L)
     MotdHandler.motd?.let { MessageLaterTask(player, it).runTaskLater(plugin, 5L) }
 
     if(StatusManager.getStatus("lockchat"))
