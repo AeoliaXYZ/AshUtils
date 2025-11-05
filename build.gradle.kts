@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "xyz.aeolia"
-version = "2.1.11-dev5"
+version = "2.1.11"
 description = "AeoliaLib"
 java.sourceCompatibility = JavaVersion.VERSION_21
 
@@ -32,7 +32,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
 
-    compileOnly("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT")
     compileOnly("net.essentialsx:EssentialsX:2.21.0") {
         exclude(group = "org.spigotmc", module = "spigot-api")
     }
@@ -45,8 +45,9 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:2.2.0")
     testImplementation("org.mockito:mockito-core:4.5.1")
     testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
-    testImplementation("org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.72.5")
+    testImplementation("org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.97.0")
     testImplementation("org.slf4j:slf4j-simple:2.0.7")
+    testImplementation("io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT")
 }
 
 publishing {
