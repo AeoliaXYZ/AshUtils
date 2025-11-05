@@ -9,7 +9,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.aeolia.lib.task.AFKTask;
-import xyz.aeolia.lib.task.VanishTask;
+import xyz.aeolia.lib.task.VanishStatusChangeTask;
 
 public class EssEventListener implements Listener {
   JavaPlugin plugin;
@@ -29,6 +29,6 @@ public class EssEventListener implements Listener {
 
   @EventHandler(priority = EventPriority.LOWEST)
   public void onVanishStatusChange(VanishStatusChangeEvent event) {
-    new VanishTask(event).runTaskLater(plugin, 2);
+    new VanishStatusChangeTask(event).runTaskLater(plugin, 2);
   }
 }

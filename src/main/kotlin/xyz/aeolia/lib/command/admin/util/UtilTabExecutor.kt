@@ -1,5 +1,6 @@
 package xyz.aeolia.lib.command.admin.util
 
+import org.bukkit.Bukkit
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 import org.bukkit.command.TabExecutor
@@ -12,7 +13,8 @@ class UtilTabExecutor(val lib: AeoliaLib) : TabExecutor {
   val subCommands: MutableList<SubCommandHandler> = mutableListOf(
     ReloadHandler(lib),
     ClearChatHandler,
-    MotdHandler
+    MotdHandler,
+    DumpHandler
   )
 
   @Suppress("DEPRECATION")
@@ -50,11 +52,13 @@ class UtilTabExecutor(val lib: AeoliaLib) : TabExecutor {
 
     if (args.size == 1) {
       if (sender.hasPermission("lib.admin"))
-        commands.addAll(listOf("motd", "reload", "restartonempty", "lockchat", "clearchat"))
+        commands.addAll(listOf("motd", "reload", "restartonempty", "lockchat", "clearchat", "dump"))
       StringUtil.copyPartialMatches<MutableList<String>>(args[0], commands, completions)
     } else if (args.size == 2) {
       if (args[0] == "restartonempty" || args[0] == "lockchat") if (sender.hasPermission("lib.admin"))
         commands.addAll(listOf("true", "false", "status"))
+      if (args[0] == "dump")
+        commands.addAll(Bukkit.getOnlinePlayers().map { it.name })
       StringUtil.copyPartialMatches<MutableList<String>>(args[1], commands, completions)
     }
     completions.sort().also { return completions }

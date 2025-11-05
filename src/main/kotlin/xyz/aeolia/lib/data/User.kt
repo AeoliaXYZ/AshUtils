@@ -14,4 +14,13 @@ data class User(
   @SerialName("modmode") var modMode: Boolean = false,
   @Serializable(with = UUIDSerializer::class) var uuid: UUID? = null,
   var vanish: Boolean = false,
- )
+ ) {
+  fun getData() : Map<String, Any?> = mapOf(
+    "online" to online,
+    "pvpblocks" to pvpBlocks,
+    "lastpvppayout" to lastPvpPayout,
+    "modmode" to modMode,
+    "uuid" to uuid,
+    "vanish" to vanish
+  )
+}
