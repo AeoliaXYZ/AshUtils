@@ -51,6 +51,7 @@ class SuffixCommandExecutor(private val plugin: JavaPlugin) : TabExecutor {
           e.data().add(node)
           PermissionManager.api.groupManager.saveGroup(e)
           if (!suffixList.contains(args[1])) {
+            suffixList.add(args[1])
             plugin.config.set("suffix.list", suffixList)
             plugin.saveConfig()
           }
