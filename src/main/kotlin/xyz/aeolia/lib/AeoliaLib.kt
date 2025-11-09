@@ -51,6 +51,7 @@ open class AeoliaLib : JavaPlugin() {
     pm.registerEvents(JoinQuitListener(this), this)
     pm.registerEvents(EssEventListener(this), this)
     pm.registerEvents(PVPListener(this), this)
+    pm.registerEvents(mineListener, this)
     pm.registerEvents(ChatListener, this)
     // Config
     configManager.loadConfig()

@@ -14,7 +14,6 @@ import xyz.aeolia.lib.manager.UserMapManager
 import xyz.aeolia.lib.task.MessageLaterTask
 import xyz.aeolia.lib.task.ROEQuitTask
 import xyz.aeolia.lib.task.UserPruneTask
-import xyz.aeolia.lib.task.VanishJoinTask
 import xyz.aeolia.lib.user
 import xyz.aeolia.lib.utils.Message
 
@@ -38,10 +37,12 @@ class JoinQuitListener(private val plugin: JavaPlugin) : Listener {
 
     player.user().online = true
 
-    VanishJoinTask(ess!!.getUser(player)).runTaskLater(plugin, 1L)
+    if (player.hasPermission("group." + plugin.config.getString("vanish-on-login-group")!!) && ess != null)
+      player.user().vanish = true
+
     MotdHandler.motd?.let { MessageLaterTask(player, it).runTaskLater(plugin, 5L) }
 
-    if(StatusManager.getStatus("lockchat"))
+    if (StatusManager.getStatus("lockchat"))
       MessageLaterTask(player, Message.Chat.LOCKED).runTaskLater(plugin, 20L)
   }
 
