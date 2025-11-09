@@ -35,13 +35,14 @@ class JoinQuitListener(private val plugin: JavaPlugin) : Listener {
 
     UserMapManager.putUserInMap(player.name, player.uniqueId)
 
-    val user = player.user()
-    user.online = true
-    user.vanish = ess!!.getUser(player).isVanished
+    player.user().online = true
+
+    if (player.hasPermission("group." + plugin.config.getString("vanish-on-login-group")!!) && ess != null)
+      player.user().vanish = true
 
     MotdHandler.motd?.let { MessageLaterTask(player, it).runTaskLater(plugin, 5L) }
 
-    if(StatusManager.getStatus("lockchat"))
+    if (StatusManager.getStatus("lockchat"))
       MessageLaterTask(player, Message.Chat.LOCKED).runTaskLater(plugin, 20L)
   }
 

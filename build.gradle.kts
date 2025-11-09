@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "xyz.aeolia"
-version = "2.1.11"
+version = "2.2"
 description = "AeoliaLib"
 java.sourceCompatibility = JavaVersion.VERSION_21
 
@@ -103,4 +103,8 @@ tasks.test {
     filter {
         includeTestsMatching("*Test")
     }
+}
+
+tasks.build{
+    dependsOn(tasks.shadowJar)
 }
