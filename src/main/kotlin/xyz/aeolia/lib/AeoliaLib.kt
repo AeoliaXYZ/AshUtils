@@ -9,6 +9,7 @@ import xyz.aeolia.lib.command.NotEnabledCommandExecutor
 import xyz.aeolia.lib.command.admin.*
 import xyz.aeolia.lib.command.admin.util.UtilTabExecutor
 import xyz.aeolia.lib.command.user.*
+import xyz.aeolia.lib.command.user.suffix.SuffixCommandExecutor
 import xyz.aeolia.lib.listener.*
 import xyz.aeolia.lib.manager.*
 import xyz.aeolia.lib.sender.MessageSender

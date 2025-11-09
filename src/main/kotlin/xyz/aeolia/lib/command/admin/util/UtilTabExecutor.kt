@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.command.TabExecutor
 import org.bukkit.util.StringUtil
 import xyz.aeolia.lib.AeoliaLib
+import xyz.aeolia.lib.data.SubCommandHandler
 import xyz.aeolia.lib.sender.MessageSender.sendMessage
 import xyz.aeolia.lib.utils.Message.Generic.COMMAND_USAGE
 

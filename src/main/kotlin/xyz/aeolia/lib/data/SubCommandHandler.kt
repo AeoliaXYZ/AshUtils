@@ -1,4 +1,4 @@
-package xyz.aeolia.lib.command.admin.util
+package xyz.aeolia.lib.data
 
 import org.bukkit.command.CommandSender
 

@@ -2,7 +2,7 @@ package xyz.aeolia.lib.command.admin.util
 
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
-import xyz.aeolia.lib.manager.UserManager
+import xyz.aeolia.lib.data.SubCommandHandler
 import xyz.aeolia.lib.manager.UserMapManager
 import xyz.aeolia.lib.sender.MessageSender
 import xyz.aeolia.lib.user
