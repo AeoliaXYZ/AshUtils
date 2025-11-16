@@ -39,7 +39,7 @@ class UtilTabExecutor(val lib: AeoliaLib) : TabExecutor {
     }
 
     return true.also { sendMessage(sender,
-      "$COMMAND_USAGE\n/util reload/restartonempty/motd/clearchat/lockchat.", true) }
+      "$COMMAND_USAGE\n/util reload/restartonempty/motd/clearchat/lockchat/dump.", true) }
   }
 
   override fun onTabComplete(
