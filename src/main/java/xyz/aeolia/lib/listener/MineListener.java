@@ -1,6 +1,7 @@
 package xyz.aeolia.lib.listener;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -95,13 +96,14 @@ public class MineListener implements Listener {
 
   @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
   public void blockBreakEvent(BlockBreakEvent event) {
+    if (event.getPlayer().getGameMode() != GameMode.SURVIVAL) return;
     Block block = event.getBlock();
     Material material = block.getType();
     if (!materials.containsKey(material)) {
       return;
     }
-    LibBlock wb = new LibBlock(block);
-    if (blocksFound.containsKey(wb)) {
+    LibBlock libBlock = new LibBlock(block);
+    if (blocksFound.containsKey(libBlock)) {
       return;
     }
     Set<Block> findSimilarAdjacentBlocks = findSimilarAdjacentBlocks(block);
@@ -184,8 +186,7 @@ public class MineListener implements Listener {
             + block.getY() + " " + block.getZ() + " in " + block.getWorld().getName()
             + "</aqua><yellow> (light level: </yellow><aqua>" + lightLevel + "</aqua><yellow>)!";
     for (Player player : Bukkit.getOnlinePlayers()) {
-      if (player.hasPermission("lib.alert"))
-        if (UserManager.getUser(player).getModMode())
+      if (player.hasPermission("lib.alert") && UserManager.getUser(player).getModMode())
           MessageSender.sendMessage(player, "<gold><bold>!! <reset>" + message, false);
     }
     URI uri;
