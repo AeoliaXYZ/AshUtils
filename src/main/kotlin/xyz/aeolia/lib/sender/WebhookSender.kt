@@ -2,9 +2,9 @@ package xyz.aeolia.lib.sender
 
 import com.google.gson.JsonObject
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
+import xyz.aeolia.lib.plaintext
 import xyz.aeolia.lib.utils.Message.Error.CONFIG
 import xyz.aeolia.lib.utils.Message.Error.REQUEST_FAIL
 import java.net.URI
@@ -38,7 +38,7 @@ class WebhookSender {
      */
     fun broadcast(message: Component): Boolean {
       MessageSender.sendMessage(Bukkit.getServer(), message, true)
-      val messageAsString = PlainTextComponentSerializer.plainText().serialize(message)
+      val messageAsString = message.plaintext()
       val uri = try {
         URI(plugin.config.getString("discord.broadcast-webhook") ?: "")
       } catch (_: URISyntaxException) {

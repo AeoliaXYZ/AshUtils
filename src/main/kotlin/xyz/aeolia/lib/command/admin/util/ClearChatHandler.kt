@@ -3,6 +3,7 @@ package xyz.aeolia.lib.command.admin.util
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
+import xyz.aeolia.lib.data.SubCommandHandler
 import xyz.aeolia.lib.sender.MessageSender
 
 object ClearChatHandler : SubCommandHandler() {

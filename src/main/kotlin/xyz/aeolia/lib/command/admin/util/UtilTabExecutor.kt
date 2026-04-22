@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.command.TabExecutor
 import org.bukkit.util.StringUtil
 import xyz.aeolia.lib.AeoliaLib
+import xyz.aeolia.lib.data.SubCommandHandler
 import xyz.aeolia.lib.sender.MessageSender.sendMessage
 import xyz.aeolia.lib.utils.Message.Generic.COMMAND_USAGE
 
@@ -38,7 +39,7 @@ class UtilTabExecutor(val lib: AeoliaLib) : TabExecutor {
     }
 
     return true.also { sendMessage(sender,
-      "$COMMAND_USAGE\n/util reload/restartonempty/motd/clearchat/lockchat.", true) }
+      "$COMMAND_USAGE\n/util reload/restartonempty/motd/clearchat/lockchat/dump.", true) }
   }
 
   override fun onTabComplete(
