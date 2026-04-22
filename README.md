@@ -2,7 +2,7 @@
 [![Build](https://github.com/AeoliaXYZ/AeoliaLib/actions/workflows/gradle.yml/badge.svg)](https://github.com/AeoliaXYZ/AshUtils/actions)
 [![Dependency review](https://github.com/AeoliaXYZ/AeoliaLib/actions/workflows/dependency-review.yml/badge.svg)](https://github.com/AeoliaXYZ/AshUtils/actions)
 
-# AeoliaLib
+# AeoliaLib 
 This is a bespoke general plugin for the demands of aeolia.xyz. We don't recommend running it outside of this environment.    
     
 ## Setup
