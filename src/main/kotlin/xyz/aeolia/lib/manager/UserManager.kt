@@ -41,12 +41,12 @@ object UserManager {
 
     val file = File(folder, "${uuid}.json")
     val user: User = run {
-      if (!file.exists()) null
+      if (!file.exists()) return@run null
       try {
         json.decodeFromString<User>(file.readText())
       } catch (_: SerializationException) {
         plugin.logger.severe("Could not read file ${file.absolutePath}. Resetting it")
-        null
+        return@run null
       }
     } ?: run { return User(uuid = uuid, online = player.isOnline) }
     putUser(user)
